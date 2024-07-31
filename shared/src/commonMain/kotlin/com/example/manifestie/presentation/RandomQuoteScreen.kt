@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun RandomQuoteScreen(
     modifier: Modifier = Modifier,
-    viewModel: Int
+    viewModel: Int = 0
 ) {
     RandomQuoteScreen(modifier)
 }
