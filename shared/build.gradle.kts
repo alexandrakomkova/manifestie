@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.bundles.ktor)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -48,6 +49,8 @@ kotlin {
             implementation(libs.bundles.ktor)
             //implementation(libs.kotlinx.coroutines.core)
             implementation("io.github.aakira:napier:2.7.1")
+            implementation(libs.koin.core)
+            implementation(libs.koin.test)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
