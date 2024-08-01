@@ -1,21 +1,19 @@
-package com.example.manifestie.android.di
+package com.example.manifestie.di
 
-import com.example.manifestie.network.ZenQuotesClient
-import com.example.manifestie.network.createHttpClient
+import com.example.manifestie.data.network.ZenQuotesClient
+import com.example.manifestie.data.network.createHttpClient
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.dsl.module
 
-
-
-fun androidModule() = module {
+val networkModule = module {
 
     single { provideHttpClient() }
     single { provideZenQuotesClient(get()) }
 }
 
 fun provideHttpClient(): HttpClient {
-    return createHttpClient(OkHttp.create())
+    return createHttpClient()
+
 }
 
 fun provideZenQuotesClient(httpClient: HttpClient): ZenQuotesClient {

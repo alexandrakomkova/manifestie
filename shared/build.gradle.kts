@@ -49,8 +49,9 @@ kotlin {
             implementation(libs.bundles.ktor)
             //implementation(libs.kotlinx.coroutines.core)
             implementation("io.github.aakira:napier:2.7.1")
-            implementation(libs.koin.core)
+            //implementation(libs.koin.core)
             implementation(libs.koin.test)
+            implementation(libs.koin.compose)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)

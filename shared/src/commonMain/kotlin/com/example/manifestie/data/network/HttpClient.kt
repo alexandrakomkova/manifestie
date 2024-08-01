@@ -1,4 +1,4 @@
-package com.example.manifestie.network
+package com.example.manifestie.data.network
 
 import com.example.manifestie.core.NETWORK_TIME_OUT
 import io.github.aakira.napier.Napier
@@ -20,8 +20,8 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-fun createHttpClient(engine: HttpClientEngine): HttpClient {
-    return HttpClient(engine) {
+fun createHttpClient(): HttpClient {
+    return HttpClient {
 
         install(ContentNegotiation) {
             json(

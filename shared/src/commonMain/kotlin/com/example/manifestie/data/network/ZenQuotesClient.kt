@@ -1,4 +1,4 @@
-package com.example.manifestie.network
+package com.example.manifestie.data.network
 
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.Result
