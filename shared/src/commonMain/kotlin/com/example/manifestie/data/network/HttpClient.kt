@@ -21,7 +21,6 @@ import kotlinx.serialization.json.Json
 
 fun createHttpClient(): HttpClient {
     return HttpClient {
-
         install(ContentNegotiation) {
             json(
                 Json {

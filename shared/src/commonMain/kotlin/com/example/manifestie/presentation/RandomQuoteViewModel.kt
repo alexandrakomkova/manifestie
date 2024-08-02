@@ -4,6 +4,8 @@ import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
 import com.example.manifestie.data.ZenQuotesRepositoryImpl
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +21,8 @@ class RandomQuoteViewModel(
     val state = _state.asStateFlow()
 
     suspend fun getRandomQuote() {
-        viewModelScope.launch(Dispatchers.IO) {
-
+        CoroutineScope(Dispatchers.IO).launch {
+            Napier.d(tag = "coroutine scope", message = "inside")
             _state.update {
                 it.copy(
                     isLoading = true,
@@ -31,7 +33,9 @@ class RandomQuoteViewModel(
             repository.getRandomQuote()
                 .onSuccess {
                     _state.update { rState ->
-                        rState.copy(quote = it ?: "no data provided" ) }
+                        rState.copy(quote = it ?: "no data provided" )
+                    }
+                    Napier.d(tag = "onSuccess", message = it ?: "empty success")
                 }
                 .onError {
                     _state.update { rState ->
@@ -39,6 +43,8 @@ class RandomQuoteViewModel(
                             error = it
                         )
                     }
+
+                    Napier.d(tag = "onError", message = it.toString())
                 }
 
             _state.update {
