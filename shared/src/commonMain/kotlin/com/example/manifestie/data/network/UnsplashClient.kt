@@ -3,7 +3,6 @@ package com.example.manifestie.data.network
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.Result
 import com.example.manifestie.core.UNSPLASH_RANDOM_URL
-import com.example.manifestie.core.unsplash_access_key
 import com.example.manifestie.data.model.UnsplashResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -21,7 +20,7 @@ class UnsplashClient(
             httpClient.get(urlString = UNSPLASH_RANDOM_URL) {
                 parameter(
                     "client_id",
-                    unsplash_access_key
+                    ""
                 )
             }
         } catch (e: UnresolvedAddressException) {
