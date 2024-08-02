@@ -45,4 +45,8 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
 
 
+    implementation(libs.koin.android)
+    // implementation(libs.koin.android.compose)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.core)
 }

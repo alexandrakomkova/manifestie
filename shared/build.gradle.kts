@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.bundles.ktor)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -48,6 +49,9 @@ kotlin {
             implementation(libs.bundles.ktor)
             //implementation(libs.kotlinx.coroutines.core)
             implementation("io.github.aakira:napier:2.7.1")
+            //implementation(libs.koin.core)
+            implementation(libs.koin.test)
+            implementation(libs.koin.compose)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -66,4 +70,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+
+dependencies {
+    commonMainApi(libs.mvvm.core)
+    commonMainApi(libs.mvvm.compose)
+    commonMainApi(libs.mvvm.flow)
+    commonMainApi(libs.mvvm.flow.compose)
 }
