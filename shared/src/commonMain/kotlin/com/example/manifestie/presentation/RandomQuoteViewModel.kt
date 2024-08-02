@@ -1,6 +1,5 @@
 package com.example.manifestie.presentation
 
-import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
 import com.example.manifestie.data.ZenQuotesRepositoryImpl
