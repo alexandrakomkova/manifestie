@@ -8,4 +8,4 @@ captures
 .cxx
 local.properties
 xcuserdata
-ApiKeys.kt
+shared/src/commonMain/kotlin/com/example/manifestie/core/ApiKeys.kt
