@@ -1,5 +1,6 @@
 package com.example.manifestie.data.network
 
+import com.example.manifestie.apiKeys.unsplash_access_key
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.Result
 import com.example.manifestie.core.UNSPLASH_RANDOM_URL
@@ -20,7 +21,7 @@ class UnsplashClient(
             httpClient.get(urlString = UNSPLASH_RANDOM_URL) {
                 parameter(
                     "client_id",
-                    ""
+                    unsplash_access_key
                 )
             }
         } catch (e: UnresolvedAddressException) {
