@@ -30,7 +30,8 @@ fun RandomQuoteScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getRandomQuote()
+        //viewModel.getRandomQuote()
+        viewModel.getRandomPhoto()
         Napier.d(tag = "LaunchedEffect", message = state.toString())
     }
 
@@ -68,10 +69,6 @@ fun RandomQuoteScreen(
             RandomQuoteScreen(modifier, state.quote)
         }
     }
-
-    Napier.d(tag = "RandomQuoteScreen", message = state.quote)
-
-
 }
 
 @Composable

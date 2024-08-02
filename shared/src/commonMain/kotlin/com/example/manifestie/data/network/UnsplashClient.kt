@@ -15,7 +15,6 @@ import kotlinx.serialization.SerializationException
 class UnsplashClient(
     private val httpClient: HttpClient
 ) {
-
     suspend fun getRandomPhoto(): Result<UnsplashResponse, NetworkError> {
         val response = try {
             httpClient.get(urlString = UNSPLASH_RANDOM_URL) {
