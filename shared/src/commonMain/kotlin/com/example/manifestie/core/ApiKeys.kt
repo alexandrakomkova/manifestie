@@ -1,3 +1,3 @@
 package com.example.manifestie.core
 
-const val unsplash_access_key = "01VcQ"
+const val unsplash_access_key = "0"
