@@ -1,6 +1,6 @@
 package com.example.manifestie.di
 
-import com.example.manifestie.data.ZenQuotesRepositoryImpl
+import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
 import com.example.manifestie.domain.repository.ZenQuotesRepository
 import org.koin.dsl.bind
 import org.koin.dsl.module

@@ -2,7 +2,7 @@ package com.example.manifestie.presentation
 
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
-import com.example.manifestie.data.ZenQuotesRepositoryImpl
+import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope

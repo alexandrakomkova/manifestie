@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
 }
+
 
 kotlin {
     androidTarget {
@@ -77,4 +80,8 @@ dependencies {
     commonMainApi(libs.mvvm.compose)
     commonMainApi(libs.mvvm.flow)
     commonMainApi(libs.mvvm.flow.compose)
+}
+
+fun getUnsplashAccess(): String? {
+    return project.findProperty("unsplash_access_key") as? String
 }

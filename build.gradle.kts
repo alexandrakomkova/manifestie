@@ -1,3 +1,4 @@
+
 plugins {
     //trick: for the same plugin versions in all sub-modules
     alias(libs.plugins.androidApplication).apply(false)
@@ -8,4 +9,6 @@ plugins {
 
 
     alias(libs.plugins.kotlin.serialization) apply false
+
+
 }
