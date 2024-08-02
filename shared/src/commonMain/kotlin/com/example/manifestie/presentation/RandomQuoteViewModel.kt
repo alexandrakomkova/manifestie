@@ -1,5 +1,6 @@
 package com.example.manifestie.presentation
 
+import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
 import com.example.manifestie.data.ZenQuotesRepositoryImpl
@@ -19,6 +20,34 @@ class RandomQuoteViewModel(
 
     private val _state = MutableStateFlow(RandomQuoteState())
     val state = _state.asStateFlow()
+
+    /*suspend fun flowGetRandomQuote() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                _state.update { it.copy(isLoading = true) }
+
+                repository.getRandomQuote()
+                    .onSuccess {
+                        _state.update { rState ->
+                            rState.copy(quote = it ?: "no data provided", isLoading = false)
+                        }
+                        Napier.d(tag = "onSuccess", message = it ?: "empty success")
+                    }
+                    .onError {
+                        _state.update { rState ->
+                            rState.copy(
+                                error = it,
+                                isLoading = false
+                            )
+                        }
+
+                        Napier.d(tag = "onError", message = it.toString())
+                    }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false, error = NetworkError.UNKNOWN) }
+            }
+        }
+    }*/
 
     suspend fun getRandomQuote() {
         CoroutineScope(Dispatchers.IO).launch {
