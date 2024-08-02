@@ -50,11 +50,15 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.bundles.ktor)
-            //implementation(libs.kotlinx.coroutines.core)
             implementation("io.github.aakira:napier:2.7.1")
-            //implementation(libs.koin.core)
+
             implementation(libs.koin.test)
             implementation(libs.koin.compose)
+
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
