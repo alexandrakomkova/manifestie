@@ -45,7 +45,7 @@ fun RandomQuoteScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        //viewModel.getRandomQuote()
+        viewModel.getRandomQuote()
         viewModel.getRandomPhoto()
         Napier.d(tag = "LaunchedEffect", message = state.toString())
     }
@@ -79,7 +79,7 @@ fun RandomQuoteScreen(
             )
         }
 
-        if(state.imageUrl.isNotBlank()) {
+        if(state.imageUrl.isNotBlank() || state.quote.isNotBlank()) {
             Napier.d(tag = "RandomQuoteScreen", message = "show")
             RandomQuoteScreen(modifier, state)
         }
@@ -131,7 +131,7 @@ fun RandomQuoteScreen(
         }
 
         Text(
-            text = state.quote,//"When you know what you want, and want it bad enough, you will find a way to get it.",
+            text = state.quote, //"When you know what you want, and want it bad enough, you will find a way to get it.",
             fontSize = 24.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
@@ -141,5 +141,7 @@ fun RandomQuoteScreen(
                 .padding(50.dp)
                 .align(Alignment.BottomCenter)
         )
+
+        
     }
 }
