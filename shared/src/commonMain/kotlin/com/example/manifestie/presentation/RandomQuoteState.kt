@@ -6,5 +6,5 @@ data class RandomQuoteState (
     val isLoading: Boolean = false,
     val quote: String = "",
     val imageUrl: String = "",
-    val error: NetworkError? = null
+    val error: String? = null
 )

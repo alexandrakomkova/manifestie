@@ -56,32 +56,33 @@ fun RandomQuoteScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if(state.isLoading) {
-            Napier.d(tag = "RandomQuoteScreen", message = "loading")
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        }
 
-        if(state.error != null) {
-            Napier.d(tag = "RandomQuoteScreen", message = "error")
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 170.dp,
-                        bottom = 70.dp
-                    ),
-                text = state.error.toString(),
-                color = Color.Red,
-                textAlign = TextAlign.Center,
-            )
-        }
-
-        if(state.imageUrl.isNotBlank() || state.quote.isNotBlank()) {
-            Napier.d(tag = "RandomQuoteScreen", message = "show")
-            RandomQuoteScreen(modifier, state)
+        when {
+            state.isLoading -> {
+                Napier.d(tag = "RandomQuoteScreen", message = "loading")
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+            state.error != null -> {
+                Napier.d(tag = "RandomQuoteScreen", message = "error")
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 170.dp,
+                            bottom = 70.dp
+                        ),
+                    text = state.error.toString(),
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            state.imageUrl.isNotBlank() || state.quote.isNotBlank() -> {
+                Napier.d(tag = "RandomQuoteScreen", message = "show")
+                RandomQuoteScreen(modifier, state)
+            }
         }
     }
 }
@@ -131,7 +132,8 @@ fun RandomQuoteScreen(
         }
 
         Text(
-            text = state.quote, //"When you know what you want, and want it bad enough, you will find a way to get it.",
+            text = state.quote,
+            //"When you know what you want, and want it bad enough, you will find a way to get it.",
             fontSize = 24.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,

@@ -9,5 +9,6 @@ data class UnsplashResponse (
 
 @Serializable
 data class UnsplashPhotoUrls (
-    val small: String
+    val small: String,
+    val regular: String
 )

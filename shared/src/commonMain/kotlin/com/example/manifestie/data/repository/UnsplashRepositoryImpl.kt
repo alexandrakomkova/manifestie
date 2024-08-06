@@ -10,6 +10,6 @@ class UnsplashRepositoryImpl(
     private val unsplashClient: UnsplashClient
 ): UnsplashRepository {
     override suspend fun getRandomPhoto(): Result<String?, NetworkError> =
-        unsplashClient.getRandomPhoto().map { it.urls.small }
+        unsplashClient.getRandomPhoto().map { it.urls.regular }
 
 }
