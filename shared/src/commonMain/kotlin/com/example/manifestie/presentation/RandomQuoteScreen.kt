@@ -2,18 +2,15 @@ package com.example.manifestie.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -37,13 +35,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
 import org.koin.compose.getKoin
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RandomQuoteScreen(
     modifier: Modifier = Modifier,
@@ -51,44 +44,30 @@ fun RandomQuoteScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.isLoading,
-        onRefresh = {
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel.getRandomQuote()
-                viewModel.getRandomPhoto()
-            }
-        },
-//        refreshThreshold = 30.dp,
-//        refreshingOffset = 30.dp
-    )
-
     LaunchedEffect(Unit) {
         viewModel.getRandomQuote()
         viewModel.getRandomPhoto()
         Napier.d(tag = "LaunchedEffect", message = state.toString())
     }
 
-    Box(
+    Column(
         modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState)
-            .verticalScroll(rememberScrollState()),
-        //verticalArrangement = Arrangement.Center,
-        //horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         when {
             state.isLoading -> {
                 Napier.d(tag = "RandomQuoteScreen", message = "loading")
-                //CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
             state.error != null -> {
                 Napier.d(tag = "RandomQuoteScreen", message = "error")
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.Center)
+                        .align(Alignment.CenterHorizontally)
                         .padding(
                             start = 20.dp,
                             end = 20.dp,
@@ -105,13 +84,6 @@ fun RandomQuoteScreen(
                 RandomQuoteScreen(modifier, state)
             }
         }
-
-        PullRefreshIndicator(
-            refreshing = viewModel.state.value.isLoading,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter),
-            backgroundColor = Color.LightGray,
-        )
     }
 }
 
@@ -120,17 +92,17 @@ fun RandomQuoteScreen(
     modifier: Modifier = Modifier,
     state: RandomQuoteState
 ) {
-
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.LightGray)
+            .background(Color.LightGray),
+        //contentAlignment = Alignment.Center
     ) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
         SubcomposeAsyncImage(
             model = state.imageUrl,
-            contentDescription = "unsplash_img",
+            contentDescription = "cocktail_img"
         ) {
             val painterState = painter.state
             if (painterState is AsyncImagePainter.State.Loading || painterState is AsyncImagePainter.State.Error) {
@@ -139,11 +111,11 @@ fun RandomQuoteScreen(
                 Image(
                     painter = painter,
                     contentDescription = null,
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                         .onGloballyPositioned { sizeImage = it.size }
-                        //.clip(MaterialTheme.shapes.medium)
+                        .clip(MaterialTheme.shapes.medium)
                         .drawWithCache {
                             val gradient = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, Color.Black),
@@ -172,6 +144,6 @@ fun RandomQuoteScreen(
                 .align(Alignment.BottomCenter)
         )
 
-        
+
     }
 }
