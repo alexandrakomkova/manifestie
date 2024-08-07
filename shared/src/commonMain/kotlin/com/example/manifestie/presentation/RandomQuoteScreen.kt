@@ -34,7 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
+import com.example.manifestie.core.ErrorBox
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.koin.compose.getKoin
 
 @Composable
@@ -64,19 +69,15 @@ fun RandomQuoteScreen(
             }
             state.error != null -> {
                 Napier.d(tag = "RandomQuoteScreen", message = "error")
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                        .padding(
-                            start = 20.dp,
-                            end = 20.dp,
-                            top = 170.dp,
-                            bottom = 70.dp
-                        ),
-                    text = state.error.toString(),
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
+
+                ErrorBox (
+                    errorDescription = state.error.toString(),
+                    onTryAgainClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.getRandomQuote()
+                            viewModel.getRandomPhoto()
+                        }
+                    }
                 )
             }
             state.imageUrl.isNotBlank() || state.quote.isNotBlank() -> {
