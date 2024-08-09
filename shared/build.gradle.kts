@@ -1,3 +1,6 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -5,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
 }
+
 
 kotlin {
     androidTarget {
@@ -29,6 +33,12 @@ kotlin {
     sourceSets {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.assertk)
+
+            @OptIn(ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+            implementation(libs.ktor.test)
         }
 
         androidMain.dependencies {
@@ -42,16 +52,21 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.bundles.ktor)
-            //implementation(libs.kotlinx.coroutines.core)
             implementation("io.github.aakira:napier:2.7.1")
-            //implementation(libs.koin.core)
+
             implementation(libs.koin.test)
             implementation(libs.koin.compose)
+
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -73,8 +88,13 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.android)
     commonMainApi(libs.mvvm.core)
     commonMainApi(libs.mvvm.compose)
     commonMainApi(libs.mvvm.flow)
     commonMainApi(libs.mvvm.flow.compose)
+}
+
+fun getUnsplashAccess(): String? {
+    return project.findProperty("unsplash_access_key") as? String
 }

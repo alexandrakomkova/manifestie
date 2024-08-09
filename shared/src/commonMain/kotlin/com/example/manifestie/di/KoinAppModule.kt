@@ -5,6 +5,9 @@ import org.koin.dsl.module
 
 val appModule = module {
     single {
-        RandomQuoteViewModel(repository = get())
+        RandomQuoteViewModel(
+            zenQuotesRepository = get(),
+            unsplashRepository = get()
+        )
     }
 }
