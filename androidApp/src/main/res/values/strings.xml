@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">manifestie</string>
+    <string name="appwidget_description">Shows the quote of the day</string>
 
 </resources>

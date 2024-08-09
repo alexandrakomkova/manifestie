@@ -47,6 +47,8 @@ kotlin {
 
             implementation(libs.ktor.client.okhttp)
             implementation(libs.bundles.ktor)
+
+            implementation(libs.bundles.glance)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

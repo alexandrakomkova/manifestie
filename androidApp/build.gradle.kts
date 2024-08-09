@@ -49,4 +49,6 @@ dependencies {
     // implementation(libs.koin.android.compose)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.core)
+
+    implementation(libs.bundles.glance)
 }
