@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -97,7 +95,6 @@ fun RandomQuoteScreen(
         modifier = modifier
             .fillMaxSize()
             .background(Color.LightGray),
-        //contentAlignment = Alignment.Center
     ) {
         var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
@@ -116,7 +113,6 @@ fun RandomQuoteScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .onGloballyPositioned { sizeImage = it.size }
-                        .clip(MaterialTheme.shapes.medium)
                         .drawWithCache {
                             val gradient = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, Color.Black),

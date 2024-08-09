@@ -29,6 +29,8 @@ class RandomQuoteViewModel(
                 _state.update {
                     it.copy(
                         isLoading = true,
+                        error = null,
+                        quote = ""
                     )
                 }
 
@@ -69,6 +71,8 @@ class RandomQuoteViewModel(
                 _state.update {
                     it.copy(
                         isLoading = true,
+                        error = null,
+                        quote = ""
                     )
                 }
 
