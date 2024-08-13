@@ -64,11 +64,15 @@ kotlin {
 
             implementation(libs.koin.test)
             implementation(libs.koin.compose)
+            implementation(libs.koin.core)
 
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+
+            api(libs.datastore)
+            api(libs.datastore.preferences)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)

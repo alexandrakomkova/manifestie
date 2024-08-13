@@ -1,6 +1,10 @@
 package com.example.manifestie.presentation
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.example.manifestie.core.NetworkError
+import com.example.manifestie.core.QUOTE_WIDGET
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
@@ -14,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform.getKoin
 
 class RandomQuoteViewModel(
     private val zenQuotesRepository: ZenQuotesRepositoryImpl,
@@ -22,6 +27,8 @@ class RandomQuoteViewModel(
 
     private val _state = MutableStateFlow(RandomQuoteState())
     val state = _state.asStateFlow()
+
+    private val dataStore: DataStore<Preferences> = getKoin().get()
 
     suspend fun getRandomPhoto() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -84,6 +91,9 @@ class RandomQuoteViewModel(
                                 quote = it ?: "no data provided"
                             )
                         }
+
+                        updateQuoteWidget(it ?: "It's gonna be a good day")
+
                         Napier.d(tag = "onSuccess", message = it ?: "empty success")
                     }
                     .onError {
@@ -108,5 +118,15 @@ class RandomQuoteViewModel(
         }
     }
 
+    private suspend fun updateQuoteWidget(newQuote: String) {
+        dataStore.edit { preferences ->
+            preferences.clear()
+            preferences[QUOTE_WIDGET] = newQuote
+        }
+
+        Napier.d(tag = "updateQuoteWidget", message = newQuote)
+    }
+
 
 }
+
