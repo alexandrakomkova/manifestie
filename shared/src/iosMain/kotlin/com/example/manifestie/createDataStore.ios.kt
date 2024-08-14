@@ -2,8 +2,8 @@ package com.example.manifestie
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.example.manifestie.data.DATASTORE_FILENAME
-import com.example.manifestie.data.createDataStore
+import com.example.manifestie.data.datastore.DATASTORE_FILENAME
+import com.example.manifestie.data.datastore.createDataStore
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager

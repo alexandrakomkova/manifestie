@@ -1,4 +1,4 @@
-package com.example.manifestie.data
+package com.example.manifestie.data.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
