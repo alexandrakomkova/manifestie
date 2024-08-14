@@ -58,7 +58,7 @@ struct Provider: TimelineProvider {
         
             for minuteOffset in 0 ..< 60 {
                 let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
-                let quote = DataStoreHelper().quote()
+                let quote = DataStoreHelper().quotePreferencesFlow
                 let entry = SimpleEntry(date: entryDate, quote: quote)
                 entries.append(entry)
             }

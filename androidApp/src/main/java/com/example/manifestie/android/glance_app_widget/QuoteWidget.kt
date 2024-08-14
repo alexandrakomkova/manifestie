@@ -1,6 +1,7 @@
 package com.example.manifestie.android.glance_app_widget
 
 import android.content.Context
+import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -34,13 +35,16 @@ class QuoteWidget(
         // Use `withContext` to switch to another thread for long running
         // operations.
 
-        quote = DataStoreHelper.quotePreferencesFlow.first()
-
+       // quote = DataStoreHelper.quotePreferencesFlow.first() // IT WORKS
         Log.d("QuoteWidget", quote)
+        DataStoreHelper.quoteUpdate()
+        quote = DataStoreHelper.quote.value
+
+        Log.d("QuoteWidget", DataStoreHelper.quote.value)
 
         provideContent {
             // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)
-            RandomWidgetContent(quote = quote)
+            RandomWidgetContent(quote = DataStoreHelper.quote.value)
         }
     }
 }
