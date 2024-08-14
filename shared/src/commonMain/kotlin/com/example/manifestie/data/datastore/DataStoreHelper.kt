@@ -2,7 +2,10 @@ package com.example.manifestie.data.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.example.manifestie.core.QUOTE_WIDGET
+import io.github.aakira.napier.Napier
+import io.ktor.http.quote
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -12,68 +15,36 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.mp.KoinPlatform.getKoin
 
-class DataStoreHelper: KoinComponent {
+object DataStoreHelper: KoinComponent {
     private val dataStore: DataStore<Preferences> = getKoin().get()
-    val quotePreferencesFlow: Flow<String> = flow {
-        dataStore.data
-            .map { preferences ->
-                // Get our show completed value, defaulting to false if not set:
-                val quotePreferencesFlow = preferences[QUOTE_WIDGET].toString()
-                emit(quotePreferencesFlow)
+
+    fun updateQuote(newQuote: String? = "kill me pls") {
+        CoroutineScope(Dispatchers.IO).launch {
+            // clean()
+            dataStore.edit { preferences ->
+                preferences[QUOTE_WIDGET] = newQuote.toString()
             }
-    }
-
-    fun quote(): String {
-        var q2: String? = "lol"
-        CoroutineScope(Dispatchers.IO).launch {
-            // dataStore.data.collect()
-            q2 = dataStore.data.first()[QUOTE_WIDGET]
-
+            Napier.d(tag = "updateQuote", message = dataStore.data.first()[QUOTE_WIDGET].toString())
         }
-        return q2 ?: "lll"
+
+        Napier.d(tag = "DataStoreHelper update", message = newQuote.toString())
     }
 
-    fun killmepls(): String {
+    private fun clean() {
         CoroutineScope(Dispatchers.IO).launch {
-            val quotePreferences: String = flow {
-                dataStore.data
-                    .map { preferences ->
-                        // Get our show completed value, defaulting to false if not set:
-                        val quotePreferences = preferences[QUOTE_WIDGET].toString()
-                        emit(quotePreferences)
-                    }
-            }.first()
-
-
+            dataStore.edit { preferences ->
+                preferences.clear()
+            }
         }
-        return "quotePreferences"
+        Napier.d(tag = "DataStoreHelper clean", message = "cleared")
     }
+
+    val quotePreferencesFlow: Flow<String> = dataStore.data
+        .map { preferences ->
+            preferences[QUOTE_WIDGET].toString()
+        }
+
+
 }
-
-//    fun getQuoteFromDataStoreFlow(): String {
-//        val dataStore: DataStore<Preferences> = getKoin().get()
-//        var quote = "not working"
-//        CoroutineScope(Dispatchers.IO).launch {
-//            dataStore.data.collect {
-//                quote = it[QUOTE_WIDGET].toString()
-//            }
-//        }
-//
-//        return quote
-//    }
-
-//    fun getQuote() {
-//        val dataStore: DataStore<Preferences> = getKoin().get()
-//
-//        var quote = "default"
-//        val userPreferencesFlow: Flow<String> = flow {
-//            dataStore.data
-//                .map { preferences ->
-//                    // Get our show completed value, defaulting to false if not set:
-//                    val userPreferencesFlow = preferences[QUOTE_WIDGET].toString() ?: "false"
-//                    emit(userPreferencesFlow)
-//                }
-//        }
-//
-//    }

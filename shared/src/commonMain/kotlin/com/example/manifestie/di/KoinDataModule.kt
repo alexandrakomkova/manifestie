@@ -18,5 +18,5 @@ val dataModule = module {
         UnsplashRepositoryImpl (unsplashClient = get())
     } bind UnsplashRepository::class
 
-    singleOf(::DataStoreHelper)
+    single { DataStoreHelper }
 }

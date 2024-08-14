@@ -1,6 +1,7 @@
 package com.example.manifestie.android.glance_app_widget
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,8 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import com.example.manifestie.android.MainActivity
+import com.example.manifestie.data.datastore.DataStoreHelper
+import kotlinx.coroutines.flow.first
 import org.koin.mp.KoinPlatform.getKoin
 
 class QuoteWidget(
@@ -31,12 +34,9 @@ class QuoteWidget(
         // Use `withContext` to switch to another thread for long running
         // operations.
 
-        val dataStore: DataStore<Preferences> = getKoin().get()
+        quote = DataStoreHelper.quotePreferencesFlow.first()
 
-//        val quoteWidgetFlow: String? = dataStore.data
-//            .map { preferences ->
-//                preferences[QUOTE_WIDGET]
-//            }.first()
+        Log.d("QuoteWidget", quote)
 
         provideContent {
             // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)

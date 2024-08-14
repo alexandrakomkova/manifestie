@@ -9,6 +9,7 @@
 import WidgetKit
 import SwiftUI
 import shared
+import Combine
 
 struct Provider: TimelineProvider {
     
@@ -36,11 +37,11 @@ struct Provider: TimelineProvider {
         }
     
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), quote: "blah blah")
+        SimpleEntry(date: Date(), quote: "Never give up!!")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), quote: "blah blah")
+        let entry = SimpleEntry(date: Date(), quote: "The strength is in our scars")
         completion(entry)
     }
  
@@ -57,7 +58,7 @@ struct Provider: TimelineProvider {
         
             for minuteOffset in 0 ..< 60 {
                 let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
-                let quote = "DataStoreHelper.killmepls()"
+                let quote = DataStoreHelper().quote()
                 let entry = SimpleEntry(date: entryDate, quote: quote)
                 entries.append(entry)
             }
