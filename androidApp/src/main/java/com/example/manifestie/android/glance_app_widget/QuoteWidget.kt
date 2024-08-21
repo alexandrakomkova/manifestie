@@ -36,11 +36,11 @@ class QuoteWidget(
         // operations.
 
        // quote = DataStoreHelper.quotePreferencesFlow.first() // IT WORKS
-        Log.d("QuoteWidget", quote)
-        DataStoreHelper.quoteUpdate()
-        quote = DataStoreHelper.quote.value
+//        Log.d("QuoteWidget", quote)
+//        DataStoreHelper.quoteUpdate()
+//        quote = DataStoreHelper.quote.value
 
-        Log.d("QuoteWidget", DataStoreHelper.quote.value)
+        Log.d("QuoteWidget", DataStoreHelper.readFromDataStore())
 
         provideContent {
             // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)

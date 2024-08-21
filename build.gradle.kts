@@ -9,6 +9,6 @@ plugins {
 
 
     alias(libs.plugins.kotlin.serialization) apply false
-
+    id("co.touchlab.skie") version "0.8.2" apply false
 
 }

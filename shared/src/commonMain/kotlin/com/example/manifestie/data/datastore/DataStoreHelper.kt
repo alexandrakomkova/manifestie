@@ -60,4 +60,8 @@ object DataStoreHelper: KoinComponent {
         }
 
     }
+
+    fun readFromDataStore(): String {
+        return "help"
+    }
 }
