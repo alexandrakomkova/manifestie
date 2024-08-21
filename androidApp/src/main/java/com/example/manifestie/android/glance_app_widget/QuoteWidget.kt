@@ -1,13 +1,10 @@
 package com.example.manifestie.android.glance_app_widget
 
 import android.content.Context
-import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.actionStartActivity
@@ -23,8 +20,6 @@ import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import com.example.manifestie.android.MainActivity
 import com.example.manifestie.data.datastore.DataStoreHelper
-import kotlinx.coroutines.flow.first
-import org.koin.mp.KoinPlatform.getKoin
 
 class QuoteWidget(
     private var quote: String = "When you know what you want, and want it bad enough, you will find a way to get it."
@@ -44,7 +39,7 @@ class QuoteWidget(
 
         provideContent {
             // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)
-            RandomWidgetContent(quote = DataStoreHelper.quote.value)
+            RandomWidgetContent(quote = DataStoreHelper.readFromDataStore())
         }
     }
 }
