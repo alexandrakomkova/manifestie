@@ -2,9 +2,7 @@ package com.example.manifestie.presentation
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import com.example.manifestie.core.NetworkError
-import com.example.manifestie.core.QUOTE_WIDGET
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
 import com.example.manifestie.data.datastore.DataStoreHelper
