@@ -8,16 +8,16 @@
 
 import WidgetKit
 import SwiftUI
-import shared
+//import shared
 import Combine
 
 struct Provider: TimelineProvider {
     
 
     
-    init() {
-            KoinHelperKt.doInitKoinIOS()
-        }
+//    init() {
+//            KoinHelperKt.doInitKoinIOS()
+//        }
     
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), quote: "Never give up!!")
@@ -28,12 +28,7 @@ struct Provider: TimelineProvider {
         completion(entry)
     }
  
-//    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-//            timelineCancellable = entryPublisher
-//                .map { Timeline(entries: [$0], policy: .atEnd) }
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveValue: completion)
-//        }
+
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
             let currentDate = Date()
@@ -41,7 +36,7 @@ struct Provider: TimelineProvider {
         
             for minuteOffset in 0 ..< 60 {
                 let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
-                let quote = "wtf???????"
+                let quote = "Future is gonna be okay"
                 let entry = SimpleEntry(date: entryDate, quote: quote)
                 entries.append(entry)
             }

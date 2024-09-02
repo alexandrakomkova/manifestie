@@ -35,11 +35,11 @@ class QuoteWidget(
 //        DataStoreHelper.quoteUpdate()
 //        quote = DataStoreHelper.quote.value
 
-        Log.d("QuoteWidget", DataStoreHelper.readFromDataStore())
+        // Log.d("QuoteWidget", DataStoreHelper.readFromDataStore())
 
         provideContent {
             // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)
-            RandomWidgetContent(quote = DataStoreHelper.readFromDataStore())
+            RandomWidgetContent(quote = quote)
         }
     }
 }
