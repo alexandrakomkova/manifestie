@@ -13,24 +13,7 @@ import Combine
 
 struct Provider: TimelineProvider {
     
-//    var timelineCancellable: AnyCancellable?
-//    
-//    private var entryPublisher: AnyPublisher<BikeShareStationEntry, Never> {
-//        let future = Future<BikeShareStationEntry, Never> { promise in
-//                    let repository =  CityBikesRepository()
-//
-//                    repository.fetchBikeShareInfo(network: "galway") { data, error in
-//                        if let stationList = data {
-//                            promise(.success(BikeShareStationEntry(date: Date(), station: stationList[0])))
-//                        }
-//                        if let errorReal = error {
-//                            print(errorReal)
-//                        }
-//                    }
-//                }
-//        
-//        return AnyPublisher(future)
-//    }
+
     
     init() {
             KoinHelperKt.doInitKoinIOS()
@@ -58,7 +41,7 @@ struct Provider: TimelineProvider {
         
             for minuteOffset in 0 ..< 60 {
                 let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
-                let quote = "DataStoreHelper().returnStringFromDataStore()"
+                let quote = "wtf???????"
                 let entry = SimpleEntry(date: entryDate, quote: quote)
                 entries.append(entry)
             }
@@ -68,9 +51,6 @@ struct Provider: TimelineProvider {
             completion(timeline)
         }
 }
-
-
-    
 
 
 struct SimpleEntry: TimelineEntry {

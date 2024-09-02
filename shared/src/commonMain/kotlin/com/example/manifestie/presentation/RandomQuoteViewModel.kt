@@ -94,7 +94,7 @@ class RandomQuoteViewModel(
                             )
                         }
 
-                        DataStoreHelper.updateQuote("")
+                        // DataStoreHelper.updateQuote("")
 
                         Napier.d(tag = "onSuccess", message = it ?: "empty success")
                     }
