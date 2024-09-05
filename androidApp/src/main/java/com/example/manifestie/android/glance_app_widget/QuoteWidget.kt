@@ -5,21 +5,28 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import com.example.manifestie.android.MainActivity
 import com.example.manifestie.data.datastore.DataStoreHelper
+import java.lang.reflect.Modifier
 
 class QuoteWidget(
     private var quote: String = "When you know what you want, and want it bad enough, you will find a way to get it."
@@ -56,14 +63,23 @@ fun RandomWidgetContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.LightGray)
-            .clickable(actionStartActivity<MainActivity>()),
-        verticalAlignment = Alignment.CenterVertically
+            .background(Color(0xFF6C63E7))
+            .clickable(actionStartActivity<MainActivity>())
+            .cornerRadius(15.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = quote,
+            text = "✨ $quote",
+            style = TextStyle(
+                color = ColorProvider(Color.White),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp
+            ),
             maxLines = 7,
-            modifier = modifier.fillMaxSize().padding(10.dp)
+            modifier = modifier
+                .fillMaxSize()
+                .padding(10.dp),
         )
     }
 }

@@ -57,9 +57,19 @@ struct QuoteWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            Text(entry.quote)
-        }
+    
+        ZStack {
+            Color(red: 0.4235, green: 0.3882, blue: 0.9059).ignoresSafeArea()
+                    HStack {
+                        Text("✨")
+                            .unredacted()
+                            .font(.system(size: 28))
+                        Text(entry.quote)
+                            .foregroundColor(Color(.white))
+                            .font(.system(size: 18))
+                    }.padding()
+                }
+        
     }
 }
 
@@ -71,11 +81,12 @@ struct QuoteWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 QuoteWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(
+                        Color("WidgetBackground"),
+                        for: .widget)
             } else {
                 QuoteWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
+                    .background(Color("WidgetBackground"))
             }
         }
         .configurationDisplayName("Manifestie Quote Widget")
