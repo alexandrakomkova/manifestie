@@ -4,6 +4,7 @@ Kotlin Multiplatform Mobile app that helps stay motivated and inspired
 ## App's features
 * Random affirmation
 * Async stunning photo loading from Unsplash
+* Home Screen widget with affirmation
 
 ## Technologies and libraries
 * Kotlin Mutliplatform Mobile
@@ -11,6 +12,7 @@ Kotlin Multiplatform Mobile app that helps stay motivated and inspired
 * Ktor
 * [Unsplash API](https://unsplash.com/developers)
 * [ZenQuotes.io](https://zenquotes.io/)
+* Glance
 * Coil
 * Clean Architecture
 
