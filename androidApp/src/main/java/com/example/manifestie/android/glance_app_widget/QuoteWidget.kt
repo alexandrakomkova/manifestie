@@ -1,7 +1,6 @@
 package com.example.manifestie.android.glance_app_widget
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -16,7 +15,6 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
@@ -25,8 +23,6 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.example.manifestie.android.MainActivity
-import com.example.manifestie.data.datastore.DataStoreHelper
-import java.lang.reflect.Modifier
 
 class QuoteWidget(
     private var quote: String = "When you know what you want, and want it bad enough, you will find a way to get it."
@@ -37,15 +33,7 @@ class QuoteWidget(
         // Use `withContext` to switch to another thread for long running
         // operations.
 
-       // quote = DataStoreHelper.quotePreferencesFlow.first() // IT WORKS
-//        Log.d("QuoteWidget", quote)
-//        DataStoreHelper.quoteUpdate()
-//        quote = DataStoreHelper.quote.value
-
-        // Log.d("QuoteWidget", DataStoreHelper.readFromDataStore())
-
         provideContent {
-            // RandomWidgetContent(quote = quoteWidgetFlow ?: quote)
             RandomWidgetContent(quote = quote)
         }
     }

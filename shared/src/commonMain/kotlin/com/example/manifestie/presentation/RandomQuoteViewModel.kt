@@ -1,7 +1,5 @@
 package com.example.manifestie.presentation
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.mp.KoinPlatform.getKoin
 
 class RandomQuoteViewModel(
     private val zenQuotesRepository: ZenQuotesRepositoryImpl,
@@ -26,8 +23,6 @@ class RandomQuoteViewModel(
 
     private val _state = MutableStateFlow(RandomQuoteState())
     val state = _state.asStateFlow()
-
-    private val dataStore: DataStore<Preferences> = getKoin().get()
 
     suspend fun getRandomPhoto() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -48,7 +43,6 @@ class RandomQuoteViewModel(
                                 imageUrl = it ?: "no data provided"
                             )
                         }
-                        DataStoreHelper.updateQuote(it)
                     }
                     .onError {
                         _state.update { rState ->
@@ -92,8 +86,7 @@ class RandomQuoteViewModel(
                             )
                         }
 
-                        // DataStoreHelper.updateQuote("")
-
+                        DataStoreHelper.updateQuote(it)
                         Napier.d(tag = "onSuccess", message = it ?: "empty success")
                     }
                     .onError {
