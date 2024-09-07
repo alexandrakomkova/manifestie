@@ -50,7 +50,7 @@ fun RandomQuoteScreen(
     LaunchedEffect(Unit) {
         viewModel.getRandomQuote()
         viewModel.getRandomPhoto()
-        Napier.d(tag = "LaunchedEffect", message = state.toString())
+        Napier.d(tag = "RandomQuoteScreen - LaunchedEffect", message = state.toString())
     }
 
     Column(
@@ -140,6 +140,8 @@ fun RandomQuoteScreen(
                 .padding(50.dp)
                 .align(Alignment.BottomCenter)
         )
+
+
 
 
     }

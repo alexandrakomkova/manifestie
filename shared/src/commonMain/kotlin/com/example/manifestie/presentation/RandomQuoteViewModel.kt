@@ -3,6 +3,7 @@ package com.example.manifestie.presentation
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.onError
 import com.example.manifestie.core.onSuccess
+import com.example.manifestie.data.datastore.DataStoreHelper
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
@@ -42,6 +43,7 @@ class RandomQuoteViewModel(
                                 imageUrl = it ?: "no data provided"
                             )
                         }
+
                     }
                     .onError {
                         _state.update { rState ->
@@ -84,6 +86,8 @@ class RandomQuoteViewModel(
                                 quote = it ?: "no data provided"
                             )
                         }
+
+                        DataStoreHelper.updateQuote(it)
                         Napier.d(tag = "onSuccess", message = it ?: "empty success")
                     }
                     .onError {
@@ -107,6 +111,5 @@ class RandomQuoteViewModel(
 
         }
     }
-
-
 }
+

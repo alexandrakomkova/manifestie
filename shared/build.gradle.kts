@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("co.touchlab.skie")
 }
 
 
@@ -14,7 +16,8 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                //jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -47,6 +50,8 @@ kotlin {
 
             implementation(libs.ktor.client.okhttp)
             implementation(libs.bundles.ktor)
+
+            implementation(libs.bundles.glance)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -62,11 +67,15 @@ kotlin {
 
             implementation(libs.koin.test)
             implementation(libs.koin.compose)
+            implementation(libs.koin.core)
 
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+
+            api(libs.datastore)
+            api(libs.datastore.preferences)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -82,8 +91,8 @@ android {
         minSdk = 24
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

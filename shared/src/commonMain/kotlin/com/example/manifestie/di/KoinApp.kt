@@ -1,12 +1,20 @@
 package com.example.manifestie.di
 
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 
-fun appModules() = listOf(
+
+fun getBaseModules() = listOf(
     dataModule,
     networkModule,
-    appModule
+    appModule,
+    platformModule
 )
 
-
+fun initKoin(additionalModules: List<Module>) {
+    startKoin {
+        modules(additionalModules + getBaseModules())
+    }
+}
 
 
