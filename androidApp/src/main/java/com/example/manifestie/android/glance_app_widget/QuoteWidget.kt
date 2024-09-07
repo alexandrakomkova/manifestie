@@ -33,6 +33,7 @@ class QuoteWidget(
         // Use `withContext` to switch to another thread for long running
         // operations.
 
+
         provideContent {
             RandomWidgetContent(quote = quote)
         }
@@ -48,6 +49,7 @@ fun RandomWidgetContent(
     modifier: GlanceModifier = GlanceModifier,
     quote: String
 ) {
+
     Column(
         modifier = modifier
             .fillMaxSize()

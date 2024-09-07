@@ -43,6 +43,7 @@ class RandomQuoteViewModel(
                                 imageUrl = it ?: "no data provided"
                             )
                         }
+
                     }
                     .onError {
                         _state.update { rState ->

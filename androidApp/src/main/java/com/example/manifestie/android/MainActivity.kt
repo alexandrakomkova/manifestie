@@ -25,12 +25,19 @@ class MainActivity : ComponentActivity() {
             )
         )
 
-        lifecycleScope.launch {
-            WidgetUpdater().saveWidgetStateByManager(DataStoreHelper.quotePreferencesFlow.first())
-        }
+//        lifecycleScope.launch {
+//            WidgetUpdater().saveWidgetStateByManager(DataStoreHelper.quotePreferencesFlow.first())
+//        }
 
         setContent {
             App()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        lifecycleScope.launch {
+            WidgetUpdater().saveWidgetStateByManager(DataStoreHelper.quotePreferencesFlow.first())
         }
     }
 }

@@ -9,13 +9,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 object DataStoreHelper: KoinComponent {
     private val dataStore: DataStore<Preferences> = getKoin().get()
+
+    private val _quote = MutableStateFlow<String>("kill me pls")
+    val quote: StateFlow<String> get() = _quote
 
     fun updateQuote(newQuote: String? = "kill me pls") {
         CoroutineScope(Dispatchers.IO).launch {
@@ -27,6 +33,18 @@ object DataStoreHelper: KoinComponent {
 
         Napier.d(tag = "DataStoreHelper update", message = newQuote.toString())
     }
+
+//    fun quoteUpdate(text: String) {
+////        CoroutineScope(Dispatchers.IO).launch {
+////            dataStore.data.collect { preferences ->
+////                _quote.update { preferences[QUOTE_WIDGET].toString()  }
+////            }
+////        }
+//
+//        _quote.update { text }
+//        Napier.d(tag = "DataStoreHelper quoteUpdate", message = text)
+//
+//    }
 
     val quotePreferencesFlow: Flow<String> = dataStore.data
         .map { preferences ->
