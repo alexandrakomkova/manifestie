@@ -25,10 +25,6 @@ class MainActivity : ComponentActivity() {
             )
         )
 
-//        lifecycleScope.launch {
-//            WidgetUpdater().saveWidgetStateByManager(DataStoreHelper.quotePreferencesFlow.first())
-//        }
-
         setContent {
             App()
         }
