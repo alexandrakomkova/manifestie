@@ -43,7 +43,8 @@ class RandomQuoteViewModel(
                                 imageUrl = it ?: "no data provided"
                             )
                         }
-                        DataStoreHelper.updateQuote(it)
+                        
+                        //DataStoreHelper.updateQuote(it)
                     }
                     .onError {
                         _state.update { rState ->
@@ -87,7 +88,7 @@ class RandomQuoteViewModel(
                             )
                         }
 
-                        //DataStoreHelper.updateQuote(it)
+                        DataStoreHelper.updateQuote(it)
                         Napier.d(tag = "onSuccess", message = it ?: "empty success")
                     }
                     .onError {
