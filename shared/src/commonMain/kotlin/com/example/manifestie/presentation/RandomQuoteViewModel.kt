@@ -43,7 +43,8 @@ class RandomQuoteViewModel(
                                 imageUrl = it ?: "no data provided"
                             )
                         }
-
+                        
+                        //DataStoreHelper.updateQuote(it)
                     }
                     .onError {
                         _state.update { rState ->

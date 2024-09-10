@@ -3,7 +3,10 @@ package com.example.manifestie.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.preferencesOf
+import com.example.manifestie.core.CommonFlow
 import com.example.manifestie.core.QUOTE_WIDGET
+import com.example.manifestie.core.asCommonFlow
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,4 +53,8 @@ object DataStoreHelper: KoinComponent {
             preferences[QUOTE_WIDGET].toString()
         }
 
+    val quoteCommonFlow: CommonFlow<String> = dataStore.data
+        .map { preferences ->
+            preferences[QUOTE_WIDGET].toString()
+        }.asCommonFlow()
 }
