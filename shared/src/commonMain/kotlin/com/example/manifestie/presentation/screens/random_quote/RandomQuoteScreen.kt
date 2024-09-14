@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation
+package com.example.manifestie.presentation.screens.random_quote
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

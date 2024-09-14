@@ -76,6 +76,8 @@ kotlin {
 
             api(libs.datastore)
             api(libs.datastore.preferences)
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
