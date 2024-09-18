@@ -1,13 +1,18 @@
 package com.example.manifestie.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectableGroup
@@ -27,8 +32,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -58,8 +66,50 @@ fun NavHostMain(
         bottomBar = {
             BottomNavigationBar(navController)
         }
-    ) {
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = BottomBarScreen.Quotes.route,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(500)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(500)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(500)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(500)
+                )
+            }
+        ) {
+            composable(route = BottomBarScreen.Quotes.route) {
+                HomeView()
+            }
+            composable(route = BottomBarScreen.RandomQuote.route) {
+                RandomQuoteScreen()
+            }
 
+            composable(route = BottomBarScreen.Settings.route) {
+                HomeView()
+            }
+
+        }
     }
 
 }
@@ -75,12 +125,12 @@ fun navigateTo(
 sealed class BottomBarScreen(
     val route: String,
     val title: String,
-    val defaultIcon: DrawableResource
+    val defaultIcon: DrawableResource?
 ) {
 
     data object Quotes: BottomBarScreen(
-        route = "RANDOM_QUOTE",
-        title = "Random Quote",
+        route = "QUOTES",
+        title = "Quotes",
         defaultIcon = null
     )
     data object RandomQuote: BottomBarScreen(
@@ -89,8 +139,8 @@ sealed class BottomBarScreen(
         defaultIcon = null
     )
     data object Settings: BottomBarScreen(
-        route = "RANDOM_QUOTE",
-        title = "Random Quote",
+        route = "SETTINGS",
+        title = "Settings",
         defaultIcon = null
     )
 
@@ -158,7 +208,7 @@ fun AppBottomNavigationBar(
 @Composable
 fun RowScope.AppBottomNavigationBarItem(
     modifier: Modifier = Modifier,
-    icon: DrawableResource,
+    icon: DrawableResource?,
     label: String,
     onItemClick: () -> Unit,
     selected: Boolean,
@@ -170,21 +220,23 @@ fun RowScope.AppBottomNavigationBarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Image(
-            painter = painterResource(icon),
-            contentDescription = icon.toString(),
-            contentScale = ContentScale.Crop,
-            colorFilter = if(selected) {
-                ColorFilter.tint(Color.Black)
-            } else {
-                ColorFilter.tint(Color.LightGray)
-            },
-            modifier = modifier.then(
-                Modifier.clickable {
-                    onItemClick()
-                }.size(24.dp)
+        icon?.let { painterResource(it) }?.let {
+            Image(
+                painter = it,
+                contentDescription = icon.toString(),
+                contentScale = ContentScale.Crop,
+                colorFilter = if(selected) {
+                    ColorFilter.tint(Color.Black)
+                } else {
+                    ColorFilter.tint(Color.LightGray)
+                },
+                modifier = modifier.then(
+                    Modifier.clickable {
+                        onItemClick()
+                    }.size(24.dp)
+                )
             )
-        )
+        }
         Text(
             text = label,
             fontWeight = if (selected) {
@@ -225,3 +277,19 @@ private val NavController.shouldShowBottomBar
 
         else -> false
     }
+
+
+@Composable
+fun HomeView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Home")
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+    }
+}

@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 
@@ -9,8 +8,22 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
+    id ("dev.icerock.mobile.multiplatform-resources")
 }
 
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "com.example.manifestie.resources"
+    generateResClass = auto
+}
+
+multiplatformResources {
+    resourcesPackage.set("com.example.manifestie") // required
+    resourcesClassName.set("SharedRes") // optional, default MR
+    //resourcesVisibility.set(MRVisibility.Internal) // optional, default Public
+    iosBaseLocalizationRegion.set("en") // optional, default "en"
+    iosMinimalDeploymentTarget.set("9.0") // optional, default "9.0"
+}
 
 kotlin {
     androidTarget {
@@ -30,6 +43,8 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
+            export("dev.icerock.moko:resources:0.24.2")
+            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
 
@@ -78,6 +93,9 @@ kotlin {
             api(libs.datastore.preferences)
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
+
+            api(libs.bundles.moko.resources)
+            implementation(compose.components.resources)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
