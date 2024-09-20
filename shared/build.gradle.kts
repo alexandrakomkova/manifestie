@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
     id ("dev.icerock.mobile.multiplatform-resources")
+    id("app.cash.sqldelight")
 }
 
 compose.resources {
@@ -67,6 +68,8 @@ kotlin {
             implementation(libs.bundles.ktor)
 
             implementation(libs.bundles.glance)
+
+            implementation(libs.sqldelight.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -96,9 +99,12 @@ kotlin {
 
             api(libs.bundles.moko.resources)
             implementation(compose.components.resources)
+
+            implementation(libs.sqldelight.coroutines)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native)
         }
 
     }
