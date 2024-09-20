@@ -37,8 +37,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
+import com.example.manifestie.resources.Res
+import com.example.manifestie.resources.title_home
+import dev.icerock.moko.resources.StringResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -124,23 +128,23 @@ fun navigateTo(
 
 sealed class BottomBarScreen(
     val route: String,
-    val title: String,
+    val title: org.jetbrains.compose.resources.StringResource,
     val defaultIcon: DrawableResource?
 ) {
 
     data object Quotes: BottomBarScreen(
         route = "QUOTES",
-        title = "Quotes",
+        title = Res.string.title_home,
         defaultIcon = null
     )
     data object RandomQuote: BottomBarScreen(
         route = "RANDOM_QUOTE",
-        title = "Random Quote",
+        title = Res.string.title_home,
         defaultIcon = null
     )
     data object Settings: BottomBarScreen(
         route = "SETTINGS",
-        title = "Settings",
+        title = Res.string.title_home,
         defaultIcon = null
     )
 
@@ -162,7 +166,7 @@ fun BottomNavigationBar(
         screens.forEach { item ->
             AppBottomNavigationBarItem(
                 icon = item.defaultIcon,
-                label = item.title,
+                label = stringResource(item.title),
                 onItemClick = {
                     navigateBottomBar(navController, item.route)
                 },
@@ -179,8 +183,8 @@ fun AppBottomNavigationBar(
     content: @Composable (RowScope.() -> Unit)
 ) {
     Surface (
-        color = Color.DarkGray,
-        contentColor = Color.Blue,
+        color = Color(0xFF6C63E7),
+        //contentColor = Color.Blue,
         modifier = modifier.windowInsetsPadding(BottomAppBarDefaults.windowInsets)
     ) {
         if(show) {
@@ -189,7 +193,7 @@ fun AppBottomNavigationBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(1.dp),
-                    color = Color.Red.copy(alpha = 0.2f)
+                    color = Color.White.copy(alpha = 0.2f)
                 )
 
                 Row(
@@ -245,7 +249,7 @@ fun RowScope.AppBottomNavigationBarItem(
                 FontWeight.Normal
             },
             color = if(selected) {
-                Color.Black
+                Color.White
             } else {
                 Color.LightGray
             }

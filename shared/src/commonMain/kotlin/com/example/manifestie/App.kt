@@ -11,11 +11,7 @@ import io.github.aakira.napier.Napier
 
 
 @Composable
-fun App(
-    //prefs: DataStore<Preferences>
-) {
-
-
+fun App() {
     ManifestieTheme {
 
         Napier.base(DebugAntilog())
