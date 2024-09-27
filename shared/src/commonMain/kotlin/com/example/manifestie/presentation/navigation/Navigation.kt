@@ -38,8 +38,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.resources.Res
-import com.example.manifestie.resources.title_home
-import dev.icerock.moko.resources.StringResource
+import com.example.manifestie.resources.list_stars_icon
+import com.example.manifestie.resources.nav_quotes
+import com.example.manifestie.resources.nav_random_quote
+import com.example.manifestie.resources.nav_settings
+import com.example.manifestie.resources.setting_icon
+import com.example.manifestie.resources.sparkles_icon
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -134,18 +138,18 @@ sealed class BottomBarScreen(
 
     data object Quotes: BottomBarScreen(
         route = "QUOTES",
-        title = Res.string.title_home,
-        defaultIcon = null
+        title = Res.string.nav_quotes,
+        defaultIcon = Res.drawable.list_stars_icon
     )
     data object RandomQuote: BottomBarScreen(
         route = "RANDOM_QUOTE",
-        title = Res.string.title_home,
-        defaultIcon = null
+        title = Res.string.nav_random_quote,
+        defaultIcon = Res.drawable.sparkles_icon
     )
     data object Settings: BottomBarScreen(
         route = "SETTINGS",
-        title = Res.string.title_home,
-        defaultIcon = null
+        title = Res.string.nav_settings,
+        defaultIcon = Res.drawable.setting_icon
     )
 
 }

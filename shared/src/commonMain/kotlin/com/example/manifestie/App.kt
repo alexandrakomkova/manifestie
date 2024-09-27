@@ -1,6 +1,5 @@
 package com.example.manifestie
 
-//import com.example.manifestie.presentation.navigation.AppNavigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable

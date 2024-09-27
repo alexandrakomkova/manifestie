@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
-    id ("dev.icerock.mobile.multiplatform-resources")
     id("app.cash.sqldelight")
 }
 
@@ -16,14 +15,6 @@ compose.resources {
     publicResClass = false
     packageOfResClass = "com.example.manifestie.resources"
     generateResClass = auto
-}
-
-multiplatformResources {
-    resourcesPackage.set("com.example.manifestie") // required
-    resourcesClassName.set("SharedRes") // optional, default MR
-    //resourcesVisibility.set(MRVisibility.Internal) // optional, default Public
-    iosBaseLocalizationRegion.set("en") // optional, default "en"
-    iosMinimalDeploymentTarget.set("9.0") // optional, default "9.0"
 }
 
 kotlin {
@@ -44,8 +35,6 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
-            export("dev.icerock.moko:resources:0.24.2")
-            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
 
@@ -97,10 +86,12 @@ kotlin {
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
 
-            api(libs.bundles.moko.resources)
-            implementation(compose.components.resources)
-
             implementation(libs.sqldelight.coroutines)
+
+            api(libs.mvvm.core)
+            api(libs.mvvm.compose)
+            api(libs.mvvm.flow)
+            api(libs.mvvm.flow.compose)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -124,10 +115,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.material3.android)
-    commonMainApi(libs.mvvm.core)
-    commonMainApi(libs.mvvm.compose)
-    commonMainApi(libs.mvvm.flow)
-    commonMainApi(libs.mvvm.flow.compose)
+//    commonMainApi(libs.mvvm.core)
+//    commonMainApi(libs.mvvm.compose)
+//    commonMainApi(libs.mvvm.flow)
+//    commonMainApi(libs.mvvm.flow.compose)
 }
 
 fun getUnsplashAccess(): String? {
