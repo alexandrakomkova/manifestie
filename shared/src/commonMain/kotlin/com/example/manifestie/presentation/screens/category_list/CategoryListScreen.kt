@@ -27,9 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.manifestie.domain.model.Category
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
+import org.koin.compose.getKoin
 
 @Composable
-fun CategoryScreen(modifier: Modifier = Modifier) {
+fun CategoryScreen(
+    modifier: Modifier = Modifier,
+    onCategoryClick: (Category) -> Unit,
+    viewModel: CategoryListViewModel = getKoin().get(),
+) {
+    val state = viewModel.state.value
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
