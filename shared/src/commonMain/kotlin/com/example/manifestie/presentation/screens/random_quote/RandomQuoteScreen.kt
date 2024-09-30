@@ -104,7 +104,9 @@ fun RandomQuoteScreen(
         ) {
             val painterState = painter.state
             if (painterState is AsyncImagePainter.State.Loading || painterState is AsyncImagePainter.State.Error) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
             } else {
                 Image(
                     painter = painter,
@@ -138,6 +140,7 @@ fun RandomQuoteScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(50.dp)
+                .padding(bottom = 10.dp)
                 .align(Alignment.BottomCenter)
         )
 

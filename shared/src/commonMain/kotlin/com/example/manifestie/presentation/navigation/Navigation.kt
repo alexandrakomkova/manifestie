@@ -36,6 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.manifestie.presentation.screens.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
@@ -77,7 +78,7 @@ fun NavHostMain(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = BottomBarScreen.Quotes.route,
+            startDestination = BottomBarScreen.QuotesCategoryList.route,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
@@ -106,8 +107,8 @@ fun NavHostMain(
                 )
             }
         ) {
-            composable(route = BottomBarScreen.Quotes.route) {
-                HomeView()
+            composable(route = BottomBarScreen.QuotesCategoryList.route) {
+                CategoryScreen()
             }
             composable(route = BottomBarScreen.RandomQuote.route) {
                 RandomQuoteScreen()
@@ -136,7 +137,7 @@ sealed class BottomBarScreen(
     val defaultIcon: DrawableResource?
 ) {
 
-    data object Quotes: BottomBarScreen(
+    data object QuotesCategoryList: BottomBarScreen(
         route = "QUOTES",
         title = Res.string.nav_quotes,
         defaultIcon = Res.drawable.list_stars_icon
@@ -159,7 +160,7 @@ fun BottomNavigationBar(
     navController: NavHostController
 ) {
     val screens = listOf(
-        BottomBarScreen.Quotes,
+        BottomBarScreen.QuotesCategoryList,
         BottomBarScreen.RandomQuote,
         BottomBarScreen.Settings
     )
@@ -234,9 +235,9 @@ fun RowScope.AppBottomNavigationBarItem(
                 contentDescription = icon.toString(),
                 contentScale = ContentScale.Crop,
                 colorFilter = if(selected) {
-                    ColorFilter.tint(Color.Black)
+                    ColorFilter.tint(Color.White)
                 } else {
-                    ColorFilter.tint(Color.LightGray)
+                    ColorFilter.tint(Color.DarkGray)
                 },
                 modifier = modifier.then(
                     Modifier.clickable {
@@ -255,7 +256,7 @@ fun RowScope.AppBottomNavigationBarItem(
             color = if(selected) {
                 Color.White
             } else {
-                Color.LightGray
+                Color.DarkGray
             }
         )
     }
@@ -268,7 +269,7 @@ private fun navigateBottomBar(
 ) {
     navController.navigate(destination) {
         navController.graph.startDestinationRoute?.let { route ->
-            popUpTo(BottomBarScreen.Quotes.route) {
+            popUpTo(BottomBarScreen.QuotesCategoryList.route) {
                 saveState = true
             }
         }
@@ -279,7 +280,7 @@ private fun navigateBottomBar(
 
 private val NavController.shouldShowBottomBar
     get() = when (this.currentBackStackEntry?.destination?.route) {
-        BottomBarScreen.Quotes.route,
+        BottomBarScreen.QuotesCategoryList.route,
         BottomBarScreen.RandomQuote.route,
         BottomBarScreen.Settings.route -> true
 
