@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
 import org.koin.compose.getKoin
 
 @Composable
