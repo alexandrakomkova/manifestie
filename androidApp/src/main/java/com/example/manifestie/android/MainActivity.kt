@@ -9,6 +9,8 @@ import com.example.manifestie.App
 import com.example.manifestie.android.glance_app_widget.WidgetUpdater
 import com.example.manifestie.data.datastore.DataStoreHelper
 import com.example.manifestie.di.initKoin
+import com.google.firebase.Firebase
+import com.google.firebase.initialize
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.dsl.module
@@ -25,6 +27,7 @@ class MainActivity : ComponentActivity() {
             )
         )
 
+        Firebase.initialize(this)
         setContent {
             App()
         }

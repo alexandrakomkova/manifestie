@@ -46,7 +46,7 @@ fun CategoryScreen(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
-                    contentDescription = "add_note"
+                    contentDescription = "add_category"
                 )
             }
         }

@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
-    id("app.cash.sqldelight")
 }
 
 compose.resources {
@@ -58,7 +57,7 @@ kotlin {
 
             implementation(libs.bundles.glance)
 
-            implementation(libs.sqldelight.android)
+            //implementation(libs.sqldelight.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -86,16 +85,20 @@ kotlin {
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
 
-            implementation(libs.sqldelight.coroutines)
+            // implementation(libs.sqldelight.coroutines)
 
             api(libs.mvvm.core)
             api(libs.mvvm.compose)
             api(libs.mvvm.flow)
             api(libs.mvvm.flow.compose)
+
+            implementation("dev.gitlive:firebase-firestore:1.8.1") // This line
+            implementation("dev.gitlive:firebase-common:1.8.1")// This line
+           // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(libs.sqldelight.native)
+            // implementation(libs.sqldelight.native)
         }
 
     }
@@ -115,10 +118,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.material3.android)
-//    commonMainApi(libs.mvvm.core)
-//    commonMainApi(libs.mvvm.compose)
-//    commonMainApi(libs.mvvm.flow)
-//    commonMainApi(libs.mvvm.flow.compose)
 }
 
 fun getUnsplashAccess(): String? {
