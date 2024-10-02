@@ -108,8 +108,8 @@ fun NavHostMain(
             }
         ) {
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                //CategoryScreen()
-                HomeView()
+                CategoryScreen()
+                //HomeView()
             }
             composable(route = BottomBarScreen.RandomQuote.route) {
                 RandomQuoteScreen()

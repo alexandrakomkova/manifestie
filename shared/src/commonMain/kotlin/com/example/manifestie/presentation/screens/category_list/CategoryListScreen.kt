@@ -3,6 +3,8 @@ package com.example.manifestie.presentation.screens.category_list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +13,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
@@ -20,6 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,16 +33,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.manifestie.domain.model.Category
+import com.example.manifestie.core.ErrorBox
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.koin.compose.getKoin
 
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    onCategoryClick: (Category) -> Unit,
+    // onCategoryClick: (Category) -> Unit,
     viewModel: CategoryListViewModel = getKoin().get(),
 ) {
-    val state = viewModel.state.value
+    val state by viewModel.state.collectAsState()
+    // var categoryList = emptyList<Category>()
+
+    LaunchedEffect(Unit) {
+        //categoryList = viewModel.getCategories()
+        viewModel.getCategoryList()
+        Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -51,29 +69,74 @@ fun CategoryScreen(
             }
         }
     ) { paddingValue ->
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(150.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-                .padding(paddingValue),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalItemSpacing = 10.dp
-        ) {
-            items(
-                listOf(
-                    "Love",
-                    "Friendship",
-                    "Family",
-                    "Career",
-                    "Creativity"
-                )
-            ) {category ->
-                CategoryCard(
-                    modifier,
-                    category
-                )
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                state.isLoading -> {
+                    Napier.d(tag = "RandomQuoteScreen", message = "loading")
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                state.error.isNotBlank() -> {
+                    Napier.d(tag = "CategoryListScreen", message = "error")
+
+                    ErrorBox (
+                        errorDescription = state.error.toString(),
+                        onTryAgainClick = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.getCategoryList()
+                            }
+                        }
+                    )
+                }
+                else -> {
+                    if(state.categories.isEmpty()) {
+                        EmptyCategoryList()
+                    } else {
+                        CategoryListBlock(
+                            paddingValue = paddingValue,
+                            state = state
+                        )
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun EmptyCategoryList(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Add your first category!"
+        )
+    }
+}
+
+@Composable
+fun CategoryListBlock(
+    modifier: Modifier = Modifier,
+    paddingValue: PaddingValues,
+    state: CategoryListState
+) {
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Adaptive(150.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .padding(paddingValue),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalItemSpacing = 10.dp
+    ) {
+        items(state.categories) {category ->
+            CategoryCard(
+                modifier,
+                category.title
+            )
         }
     }
 }
