@@ -1,9 +1,13 @@
 package com.example.manifestie.presentation.screens.category_list
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,14 +48,12 @@ import org.koin.compose.getKoin
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    // onCategoryClick: (Category) -> Unit,
+   // onCategoryClick: (Category) -> Unit,
     viewModel: CategoryListViewModel = getKoin().get(),
 ) {
     val state by viewModel.state.collectAsState()
-    // var categoryList = emptyList<Category>()
 
     LaunchedEffect(Unit) {
-        //categoryList = viewModel.getCategories()
         viewModel.getCategoryList()
         Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
     }
@@ -89,9 +91,21 @@ fun CategoryScreen(
                     )
                 }
                 else -> {
-                    if(state.categories.isEmpty()) {
-                        EmptyCategoryList()
-                    } else {
+                    AnimatedVisibility(
+                        visible = state.categories.isEmpty(),
+                        enter =  scaleIn() + fadeIn(),
+                        exit = scaleOut() + fadeOut()
+                    ) {
+                        Text(
+                            text = "Add your first category!",
+                            color = Color.White,
+                            fontSize = 22.sp)
+                    }
+                    AnimatedVisibility(
+                        visible = state.categories.isNotEmpty(),
+                        enter =  scaleIn() + fadeIn(),
+                        exit = scaleOut() + fadeOut()
+                    ) {
                         CategoryListBlock(
                             paddingValue = paddingValue,
                             state = state
@@ -100,20 +114,6 @@ fun CategoryScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun EmptyCategoryList(modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Add your first category!"
-        )
     }
 }
 
