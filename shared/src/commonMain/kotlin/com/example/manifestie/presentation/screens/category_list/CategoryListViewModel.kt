@@ -44,7 +44,7 @@ class CategoryListViewModel(
                  _state.update {
                      it.copy(
                          isLoading = true,
-                         error = "",
+                         error = null,
                          categories = emptyList()
                      )
                  }
@@ -56,7 +56,7 @@ class CategoryListViewModel(
                  _state.update { categoryListState ->
                      categoryListState.copy(
                          isLoading = false,
-                         error = "",
+                         error = null,
                          categories = categoryResponse.documents.map {
                              it.data()
                          }

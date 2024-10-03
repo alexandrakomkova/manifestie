@@ -76,7 +76,7 @@ fun CategoryScreen(
                     Napier.d(tag = "RandomQuoteScreen", message = "loading")
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                state.error.isNotBlank() -> {
+                state.error != null -> {
                     Napier.d(tag = "CategoryListScreen", message = "error")
 
                     ErrorBox (
