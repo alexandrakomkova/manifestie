@@ -1,6 +1,7 @@
 package com.example.manifestie.presentation.screens.category_list
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -8,7 +9,9 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +20,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -32,12 +36,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.presentation.screens.category_list.add_category.AddCategoryDialogEvent
+import com.example.manifestie.presentation.screens.category_list.add_category.CustomTextField
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,16 +60,75 @@ fun CategoryScreen(
     viewModel: CategoryListViewModel = getKoin().get(),
 ) {
     val state by viewModel.state.collectAsState()
+    val dialogState = viewModel.addCategoryState
 
     LaunchedEffect(Unit) {
         viewModel.getCategoryList()
         Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
+
+        viewModel.validationEvents.collect { event ->
+            when(event) {
+                CategoryListViewModel.ValidationEvent.Success -> {
+                    // add category
+
+
+                    viewModel.onEvent(AddCategoryDialogEvent.CategoryDialogOpened(false))
+                    viewModel.onEvent(AddCategoryDialogEvent.CategoryTitleChanged(""))
+                }
+            }
+        }
+    }
+
+    if(dialogState.dialogOpen) {
+        Dialog(
+            onDismissRequest = {
+                viewModel.onEvent(AddCategoryDialogEvent.CategoryDialogOpened(false))
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color.LightGray)
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CustomTextField(
+                    "Title",
+                    dialogState.title,
+                    { viewModel.onEvent(AddCategoryDialogEvent.CategoryTitleChanged(it)) } ,
+                    20,
+                    dialogState.titleError != null,
+                    dialogState.titleError
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Button(
+                    onClick = { viewModel.onEvent(AddCategoryDialogEvent.Submit) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Save",
+                        color = Color.DarkGray,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
     }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    viewModel.onEvent(AddCategoryDialogEvent.CategoryDialogOpened(true))
+                },
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Icon(
