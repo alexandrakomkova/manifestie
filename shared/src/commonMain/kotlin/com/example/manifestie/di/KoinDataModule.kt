@@ -5,7 +5,7 @@ import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
 import com.example.manifestie.domain.repository.UnsplashRepository
 import com.example.manifestie.domain.repository.ZenQuotesRepository
-import org.koin.core.module.dsl.singleOf
+import com.example.manifestie.presentation.screens.category_list.add_category.CategoryValidation
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -19,4 +19,5 @@ val dataModule = module {
     } bind UnsplashRepository::class
 
     single { DataStoreHelper }
+    single { CategoryValidation }
 }

@@ -21,7 +21,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
+import com.example.manifestie.presentation.screens.category_list.CategoryListViewModel
 import com.example.manifestie.presentation.screens.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.resources.Res
@@ -108,8 +112,14 @@ fun NavHostMain(
             }
         ) {
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                CategoryScreen()
-                //HomeView()
+                val viewModel: CategoryListViewModel = getKoin().get()
+                val dialogState by viewModel.addCategoryState.collectAsState()
+
+                CategoryScreen(
+                    viewModel = viewModel,
+                    dialogState = dialogState,
+                    onEvent = viewModel::onEvent
+                )
             }
             composable(route = BottomBarScreen.RandomQuote.route) {
                 RandomQuoteScreen()
@@ -189,8 +199,8 @@ fun AppBottomNavigationBar(
     content: @Composable (RowScope.() -> Unit)
 ) {
     Surface (
-        color = Color(0xFF6C63E7),
-        //contentColor = Color.Blue,
+        //color = Color(0xFF6C63E7),
+        color = MaterialTheme.colorScheme.primaryContainer,
         modifier = modifier.windowInsetsPadding(BottomAppBarDefaults.windowInsets)
     ) {
         if(show) {

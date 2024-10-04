@@ -10,8 +10,14 @@ import io.github.aakira.napier.Napier
 
 
 @Composable
-fun App() {
-    ManifestieTheme {
+fun App(
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
+) {
+    ManifestieTheme(
+        darkTheme = darkTheme,
+        dynamicColor = dynamicColor,
+    ) {
 
         Napier.base(DebugAntilog())
 
@@ -22,22 +28,4 @@ fun App() {
             AppNavigation()
         }
     }
-
-    /*KoinApplication(application = {
-        modules(
-            getBaseModules(),
-        )
-    }) {
-        ManifestieTheme {
-
-            Napier.base(DebugAntilog())
-
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                RandomQuoteScreen()
-            }
-        }
-    }*/
-
 }

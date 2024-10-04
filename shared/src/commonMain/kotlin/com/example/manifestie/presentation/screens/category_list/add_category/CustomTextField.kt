@@ -38,7 +38,7 @@ fun CustomTextField(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.White,
                 focusedLabelColor = Color.White,
-                textColor = Color.White
+                textColor = Color.DarkGray
             ),
             maxLines = maxLines,
             shape = RoundedCornerShape(15.dp),

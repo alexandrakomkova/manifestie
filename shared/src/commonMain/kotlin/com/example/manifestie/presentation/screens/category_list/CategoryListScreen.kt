@@ -38,30 +38,92 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.presentation.screens.category_list.add_category.AddCategorySheet
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import org.koin.compose.getKoin
 
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
    // onCategoryClick: (Category) -> Unit,
-    viewModel: CategoryListViewModel = getKoin().get(),
+    dialogState: AddCategoryState,
+    viewModel: CategoryListViewModel,
+    onEvent: (AddCategoryEvent) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getCategoryList()
         Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
+
+//        viewModel.validationEvents.collect { event ->
+//            when(event) {
+//                is CategoryListViewModel.ValidationEvent.Success -> {
+//                    // add catego
+//                    //viewModel.addCategory(dialogState.title)
+//                    Napier.d(tag = "CategoryScreen - when", message = dialogState.toString())
+//
+//
+//                    viewModel.onEvent(AddCategoryDialogEvent.CategoryDialogOpened(false))
+//                    viewModel.onEvent(AddCategoryDialogEvent.CategoryTitleChanged(""))
+//                }
+//            }
+//        }
     }
+
+//    if(dialogState.dialogOpen) {
+//        Dialog(
+//            onDismissRequest = {
+//                onEvent(AddCategoryDialogEvent.CategoryDialogOpened(false))
+//            }
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(10.dp))
+//                    .background(Color.LightGray)
+//                    .padding(10.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center
+//            ) {
+//                CustomTextField(
+//                    "Title",
+//                    dialogState.title,
+//                    { onEvent(AddCategoryDialogEvent.CategoryTitleChanged(it)) } ,
+//                    20,
+//                    dialogState.titleError != null,
+//                    dialogState.titleError
+//                )
+//                Spacer(modifier = Modifier.height(15.dp))
+//
+//                Button(
+//                    onClick = { onEvent(AddCategoryDialogEvent.Submit) },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(55.dp),
+//                    shape = RoundedCornerShape(15.dp),
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = Color.White
+//                    )
+//                ) {
+//                    Text(
+//                        text = "Save",
+//                        color = Color.DarkGray,
+//                        fontSize = 16.sp
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    onEvent(AddCategoryEvent.OnAddCategoryClick)
+                },
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Icon(
@@ -114,6 +176,12 @@ fun CategoryScreen(
                 }
             }
         }
+
+        AddCategorySheet(
+            state = dialogState,
+            isOpen = dialogState.dialogOpen,
+            onEvent = { event -> onEvent(event)}
+        )
     }
 }
 

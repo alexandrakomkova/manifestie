@@ -56,8 +56,7 @@ kotlin {
             implementation(libs.bundles.ktor)
 
             implementation(libs.bundles.glance)
-
-            //implementation(libs.sqldelight.android)
+            implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -94,7 +93,7 @@ kotlin {
 
             implementation("dev.gitlive:firebase-firestore:1.8.1") // This line
             implementation("dev.gitlive:firebase-common:1.8.1")// This line
-           // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -118,6 +117,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.material3.android)
+    implementation(libs.firebase.firestore.ktx)
 }
 
 fun getUnsplashAccess(): String? {
