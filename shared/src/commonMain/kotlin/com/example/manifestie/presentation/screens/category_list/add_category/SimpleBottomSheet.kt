@@ -42,7 +42,6 @@ fun SimpleBottomSheet(
                         topEnd = 30.dp
                     )
                 )
-                //.background(Color.Black.copy(alpha = 0.8f))
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
