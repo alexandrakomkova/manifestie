@@ -29,7 +29,7 @@ fun AddCategorySheet(
     onEvent: (AddCategoryEvent) -> Unit
 ) {
     SimpleBottomSheet(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         visible = isOpen
     ) {
         Box(

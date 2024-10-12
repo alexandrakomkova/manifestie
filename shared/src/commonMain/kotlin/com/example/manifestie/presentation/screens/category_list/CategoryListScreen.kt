@@ -21,12 +21,12 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
@@ -121,26 +120,28 @@ fun CategoryScreen(
                     ) {
                         CategoryListBlock(
                             paddingValue = paddingValue,
-                            state = state
+                            state = state,
+                            onEvent = onEvent
                         )
                     }
                 }
             }
         }
-
-        AddCategorySheet(
-            state = dialogState,
-            isOpen = dialogState.dialogOpen,
-            onEvent = { event -> onEvent(event)}
-        )
     }
+
+    AddCategorySheet(
+        state = dialogState,
+        isOpen = dialogState.dialogOpen,
+        onEvent = { event -> onEvent(event)}
+    )
 }
 
 @Composable
 fun CategoryListBlock(
     modifier: Modifier = Modifier,
     paddingValue: PaddingValues,
-    state: CategoryListState
+    state: CategoryListState,
+    onEvent: (AddCategoryEvent) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
@@ -153,8 +154,9 @@ fun CategoryListBlock(
     ) {
         items(state.categories) {category ->
             CategoryCard(
-                modifier,
-                category.title
+                modifier = modifier,
+                categoryName = category.title,
+                onEvent = { event -> onEvent(event) }
             )
         }
     }
@@ -164,7 +166,8 @@ fun CategoryListBlock(
 @Composable
 fun CategoryCard(
     modifier: Modifier = Modifier,
-    categoryName: String = "Love and friendship"
+    categoryName: String = "Love and friendship",
+    onEvent: (AddCategoryEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -204,7 +207,10 @@ fun CategoryCard(
             ) {
                 DropdownMenuItem(
                     text = { Text("Edit") },
-                    onClick = { Napier.d(tag = "dropdown edit", message = "edit") }
+                    onClick = {
+                        Napier.d(tag = "dropdown edit", message = "edit")
+                       // onEvent(AddCategoryEvent.OnAddCategoryClick)
+                    }
                 )
                 Divider()
                 DropdownMenuItem(
