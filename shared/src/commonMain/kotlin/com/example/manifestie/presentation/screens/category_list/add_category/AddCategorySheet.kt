@@ -1,21 +1,18 @@
 package com.example.manifestie.presentation.screens.category_list.add_category
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.presentation.screens.category_list.AddCategoryEvent
@@ -28,19 +25,12 @@ fun AddCategorySheet(
     isOpen: Boolean,
     onEvent: (AddCategoryEvent) -> Unit
 ) {
-    SimpleBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
-        visible = isOpen
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopStart
-        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxWidth().padding(16.dp).padding(bottom = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
-                Spacer(Modifier.height(80.dp))
+                // Spacer(Modifier.height(10.dp))
 
                 CustomTextField(
                     labelText = "Title",
@@ -54,7 +44,13 @@ fun AddCategorySheet(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 Button(
-                    onClick = { onEvent(AddCategoryEvent.SaveCategory) },
+                    onClick = {
+                        if(state.selectedCategory != null) {
+                            onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
+                        } else {
+                            onEvent(AddCategoryEvent.SaveCategory)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp),
@@ -62,25 +58,25 @@ fun AddCategorySheet(
                 ) {
                     Text(
                         text = "Save",
-                        //color = Color.DarkGray,
+                        color = Color.White,
                         fontSize = 16.sp
                     )
                 }
 
             }
 
-            IconButton(
-                onClick = {
-                    onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = "Close"
-                )
-            }
+//            IconButton(
+//                onClick = {
+//                    onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
+//                }
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Rounded.Close,
+//                    contentDescription = "Close"
+//                )
+//            }
         }
-    }
+    //}
 
-}
+//}
 

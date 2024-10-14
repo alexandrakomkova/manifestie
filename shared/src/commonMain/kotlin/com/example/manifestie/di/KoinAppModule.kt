@@ -13,6 +13,6 @@ val appModule = module {
     }
 
     single {
-       CategoryListViewModel()
+       CategoryListViewModel( firestoreCategoryRepositoryImpl = get())
     }
 }

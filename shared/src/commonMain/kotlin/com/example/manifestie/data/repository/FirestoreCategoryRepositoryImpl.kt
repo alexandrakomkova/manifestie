@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.flow
 class FirestoreCategoryRepositoryImpl: CategoryRepository {
     private val firestore = Firebase.firestore
 
-    override fun getCategories(): Flow<List<Category>> = flow {
+    override fun getCategories() = flow {
         firestore.collection("CATEGORIES").snapshots.collect { querySnapshot ->
-            val users = querySnapshot.documents.map { documentSnapshot ->
+            val categoryList = querySnapshot.documents.map { documentSnapshot ->
                 documentSnapshot.data<Category>()
             }
-            emit(users)
+            emit(categoryList)
         }
     }
 

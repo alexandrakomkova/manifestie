@@ -27,10 +27,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,9 +47,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.domain.model.Category
 import com.example.manifestie.presentation.screens.category_list.add_category.AddCategorySheet
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +59,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
@@ -64,7 +71,7 @@ fun CategoryScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getCategoryList()
+        viewModel.getCategoryFromFirestore()
         Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
     }
 
@@ -81,10 +88,14 @@ fun CategoryScreen(
                     contentDescription = "add_category"
                 )
             }
-        }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { paddingValue ->
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             when {
                 state.isLoading -> {
                     Napier.d(tag = "CategoryListScreen", message = "loading")
@@ -109,8 +120,10 @@ fun CategoryScreen(
                         exit = scaleOut() + fadeOut()
                     ) {
                         Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
                             text = "Add your first category!",
-                            color = Color.White,
+                            color = Color.Black,
                             fontSize = 22.sp)
                     }
                     AnimatedVisibility(
@@ -127,13 +140,22 @@ fun CategoryScreen(
                 }
             }
         }
-    }
 
-    AddCategorySheet(
-        state = dialogState,
-        isOpen = dialogState.dialogOpen,
-        onEvent = { event -> onEvent(event)}
-    )
+        if(dialogState.dialogOpen) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
+                },
+                sheetState = rememberModalBottomSheetState()
+            ) {
+                AddCategorySheet(
+                    state = dialogState,
+                    isOpen = dialogState.dialogOpen,
+                    onEvent = { event -> onEvent(event)}
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -155,7 +177,7 @@ fun CategoryListBlock(
         items(state.categories) {category ->
             CategoryCard(
                 modifier = modifier,
-                categoryName = category.title,
+                category = category,
                 onEvent = { event -> onEvent(event) }
             )
         }
@@ -166,7 +188,7 @@ fun CategoryListBlock(
 @Composable
 fun CategoryCard(
     modifier: Modifier = Modifier,
-    categoryName: String = "Love and friendship",
+    category: Category,
     onEvent: (AddCategoryEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -209,18 +231,21 @@ fun CategoryCard(
                     text = { Text("Edit") },
                     onClick = {
                         Napier.d(tag = "dropdown edit", message = "edit")
-                       // onEvent(AddCategoryEvent.OnAddCategoryClick)
+                        onEvent(AddCategoryEvent.OnAddCategoryClick)
                     }
                 )
                 Divider()
                 DropdownMenuItem(
                     text = { Text("Delete") },
-                    onClick = { Napier.d(tag = "dropdown", message = "delete") }
+                    onClick = {
+                        Napier.d(tag = "dropdown", message = "delete")
+                        onEvent(AddCategoryEvent.DeleteCategory)
+                    }
                 )
             }
 
             Text(
-                text = categoryName,
+                text = category.title,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
                 minLines = 1,

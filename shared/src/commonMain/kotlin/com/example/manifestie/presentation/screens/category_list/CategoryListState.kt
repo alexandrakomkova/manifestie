@@ -13,8 +13,9 @@ sealed interface AddCategoryEvent {
     data class OnCategoryTitleChanged(val title: String): AddCategoryEvent
     data object OnCategoryDialogDismiss: AddCategoryEvent
 
-    // data class EditCategory(val title: String): AddCategoryEvent
-    // data object DeleteCategory : AddCategoryEvent
+    data class EditCategory(val category: Category): AddCategoryEvent
+    data object DeleteCategory : AddCategoryEvent
+    data class SelectCategory(val category: Category): AddCategoryEvent
 
     data object SaveCategory: AddCategoryEvent
 }

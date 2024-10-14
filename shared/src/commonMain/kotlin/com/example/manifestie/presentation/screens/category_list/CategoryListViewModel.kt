@@ -14,6 +14,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -61,6 +62,26 @@ class CategoryListViewModel(
                     delay(300L) // Animation delay
                 }
             }
+
+            AddCategoryEvent.DeleteCategory -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    addCategoryState.value.selectedCategory?.let {
+                        firestoreCategoryRepositoryImpl.deleteCategory(it)
+                    }
+
+                    delay(300L)
+                    _addCategoryState.update { it.copy(
+                        selectedCategory = null
+                    ) }
+                }
+            }
+            is AddCategoryEvent.EditCategory -> {}
+            is AddCategoryEvent.SelectCategory -> {
+                _addCategoryState.update { it.copy(
+                    selectedCategory = event.category,
+                    dialogOpen = true
+                ) }
+            }
         }
     }
 
@@ -72,7 +93,12 @@ class CategoryListViewModel(
 
         if(hasError.isEmpty()) {
             Napier.d(tag = "submitData", message = addCategoryState.value.toString())
-            addCategory(addCategoryState.value.title)
+            //addCategory(addCategoryState.value.title)
+
+
+            addCategoryFirestore(
+                Category(title = addCategoryState.value.title)
+            )
 
             _addCategoryState.update { it.copy(
                 title = "",
@@ -89,7 +115,18 @@ class CategoryListViewModel(
         }
     }
 
-    private fun getCategoryFromFirestore() {
+    private fun addCategoryFirestore(category: Category) {
+        viewModelScope.launch {
+            try {
+                firestoreCategoryRepositoryImpl.addCategory(category = category)
+                Napier.d(tag = "addCategory", message = category.toString())
+            } catch (e: Exception) {
+                Napier.d(tag = "onError addCategory", message = e.message.toString())
+            }
+        }
+    }
+
+    fun getCategoryFromFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
@@ -111,8 +148,18 @@ class CategoryListViewModel(
                     }
                 }
 
+                firestoreCategoryRepositoryImpl.getCategories().flowOn(Dispatchers.IO).collect { result ->
+                    _state.update { categoryListState ->
+                        categoryListState.copy(
+                            isLoading = false,
+                            error = null,
+                            categories = result
+                        )
+                    }
+                }
+
             } catch (e: Exception) {
-                Napier.d(tag = "onError catch", message = e.message.toString())
+                Napier.d(tag = "onError getCategoryFromFirestore", message = e.message.toString())
                 _state.update { categoryListState ->
                     categoryListState.copy(
                         error = NetworkError.NO_INTERNET.errorDescription,
@@ -128,7 +175,7 @@ class CategoryListViewModel(
             try {
                firestoreCategoryRepositoryImpl.updateCategory(category)
             } catch (e: Exception) {
-                Napier.d(tag = "onError catch", message = e.message.toString())
+                Napier.d(tag = "onError updateCategory", message = e.message.toString())
 
             }
         }
@@ -139,7 +186,7 @@ class CategoryListViewModel(
             try {
                 firestoreCategoryRepositoryImpl.deleteCategory(category)
             } catch (e: Exception) {
-                Napier.d(tag = "onError catch", message = e.message.toString())
+                Napier.d(tag = "onError deletecategory", message = e.message.toString())
 
             }
         }
