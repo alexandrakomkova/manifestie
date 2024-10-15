@@ -1,4 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
@@ -8,6 +10,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
+    id("com.google.gms.google-services")
 }
 
 compose.resources {
@@ -18,11 +21,9 @@ compose.resources {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                //jvmTarget = "1.8"
-                jvmTarget = "11"
-            }
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
     
@@ -97,7 +98,6 @@ kotlin {
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            // implementation(libs.sqldelight.native)
         }
 
     }

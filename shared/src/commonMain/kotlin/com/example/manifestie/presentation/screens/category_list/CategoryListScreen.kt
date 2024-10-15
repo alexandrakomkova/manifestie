@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -137,7 +139,21 @@ fun CategoryScreen(
                 onDismissRequest = {
                     onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
                 },
-                sheetState = sheetState
+                sheetState = sheetState,
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 16.dp,
+                dragHandle = {
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(50.dp)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.primary)
+                            //.align(Alignment.Center)
+                    )
+                }
             ) {
                 AddCategorySheet(
                     state = dialogState,

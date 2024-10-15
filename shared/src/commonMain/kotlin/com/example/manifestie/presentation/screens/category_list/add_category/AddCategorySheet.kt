@@ -1,6 +1,5 @@
 package com.example.manifestie.presentation.screens.category_list.add_category
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -25,9 +23,10 @@ fun AddCategorySheet(
     onEvent: (AddCategoryEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp).padding(bottom = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .padding(bottom = 60.dp),
     ) {
 
         CustomTextField(
