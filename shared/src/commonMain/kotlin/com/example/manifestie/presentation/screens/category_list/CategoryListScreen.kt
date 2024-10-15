@@ -23,18 +23,8 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -69,6 +59,7 @@ fun CategoryScreen(
     onEvent: (AddCategoryEvent) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+    val sheetState = rememberModalBottomSheetState()
 
     LaunchedEffect(Unit) {
         viewModel.getCategoryFromFirestore()
@@ -108,7 +99,7 @@ fun CategoryScreen(
                         errorDescription = state.error.toString(),
                         onTryAgainClick = {
                             CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.getCategoryList()
+                                viewModel.getCategoryFromFirestore()
                             }
                         }
                     )
@@ -146,12 +137,11 @@ fun CategoryScreen(
                 onDismissRequest = {
                     onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
                 },
-                sheetState = rememberModalBottomSheetState()
+                sheetState = sheetState
             ) {
                 AddCategorySheet(
                     state = dialogState,
-                    isOpen = dialogState.dialogOpen,
-                    onEvent = { event -> onEvent(event)}
+                    onEvent = { event -> onEvent(event) }
                 )
             }
         }
@@ -231,7 +221,8 @@ fun CategoryCard(
                     text = { Text("Edit") },
                     onClick = {
                         Napier.d(tag = "dropdown edit", message = "edit")
-                        onEvent(AddCategoryEvent.OnAddCategoryClick)
+                        // onEvent(AddCategoryEvent.SelectCategory(category))
+                        // onEvent(AddCategoryEvent.OnAddCategoryClick)
                     }
                 )
                 Divider()
@@ -239,6 +230,7 @@ fun CategoryCard(
                     text = { Text("Delete") },
                     onClick = {
                         Napier.d(tag = "dropdown", message = "delete")
+                        onEvent(AddCategoryEvent.SelectCategory(category))
                         onEvent(AddCategoryEvent.DeleteCategory)
                     }
                 )

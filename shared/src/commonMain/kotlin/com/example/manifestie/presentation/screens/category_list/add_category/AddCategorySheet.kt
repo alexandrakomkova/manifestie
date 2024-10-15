@@ -22,61 +22,45 @@ import com.example.manifestie.presentation.screens.category_list.AddCategoryStat
 fun AddCategorySheet(
     modifier: Modifier = Modifier,
     state: AddCategoryState,
-    isOpen: Boolean,
     onEvent: (AddCategoryEvent) -> Unit
 ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(16.dp).padding(bottom = 40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                // Spacer(Modifier.height(10.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(16.dp).padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
 
-                CustomTextField(
-                    labelText = "Title",
-                    title = state.title,
-                    setTitle = { onEvent(AddCategoryEvent.OnCategoryTitleChanged(it)) } ,
-                    maxLines = 20,
-                    hasError = state.titleError != null,
-                    errorMessage = state.titleError
-                )
+        CustomTextField(
+            labelText = "Title",
+            title = state.title,
+            setTitle = { onEvent(AddCategoryEvent.OnCategoryTitleChanged(it)) } ,
+            maxLines = 20,
+            hasError = state.titleError != null,
+            errorMessage = state.titleError
+        )
 
-                Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
-                Button(
-                    onClick = {
-                        if(state.selectedCategory != null) {
-                            onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
-                        } else {
-                            onEvent(AddCategoryEvent.SaveCategory)
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(15.dp),
-                ) {
-                    Text(
-                        text = "Save",
-                        color = Color.White,
-                        fontSize = 16.sp
-                    )
+        Button(
+            onClick = {
+                if(state.selectedCategory != null) {
+                    onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
+                } else {
+                    onEvent(AddCategoryEvent.SaveCategory)
                 }
-
-            }
-
-//            IconButton(
-//                onClick = {
-//                    onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
-//                }
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Rounded.Close,
-//                    contentDescription = "Close"
-//                )
-//            }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            shape = RoundedCornerShape(15.dp),
+        ) {
+            Text(
+                text = "Save",
+                color = Color.White,
+                fontSize = 16.sp
+            )
         }
-    //}
 
-//}
+    }
+}
 

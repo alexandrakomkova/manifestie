@@ -66,20 +66,28 @@ class CategoryListViewModel(
             AddCategoryEvent.DeleteCategory -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     addCategoryState.value.selectedCategory?.let {
-                        firestoreCategoryRepositoryImpl.deleteCategory(it)
+                        deleteCategory(it)
                     }
 
                     delay(300L)
                     _addCategoryState.update { it.copy(
-                        selectedCategory = null
+                        selectedCategory = null,
+                        dialogOpen = false,
+                        title = "",
+                        titleError = null
                     ) }
+
+                    Napier.d(tag = "DeleteCategory", message = addCategoryState.value.toString())
+                    Napier.d(tag = "DeleteCategory", message = state.value.toString())
                 }
             }
-            is AddCategoryEvent.EditCategory -> {}
+            is AddCategoryEvent.EditCategory -> {
+
+            }
             is AddCategoryEvent.SelectCategory -> {
                 _addCategoryState.update { it.copy(
                     selectedCategory = event.category,
-                    dialogOpen = true
+                    // dialogOpen = true
                 ) }
             }
         }
@@ -93,8 +101,6 @@ class CategoryListViewModel(
 
         if(hasError.isEmpty()) {
             Napier.d(tag = "submitData", message = addCategoryState.value.toString())
-            //addCategory(addCategoryState.value.title)
-
 
             addCategoryFirestore(
                 Category(title = addCategoryState.value.title)
@@ -185,30 +191,9 @@ class CategoryListViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategoryRepositoryImpl.deleteCategory(category)
+                Napier.d(tag = "deleteCategory", message = category.toString())
             } catch (e: Exception) {
-                Napier.d(tag = "onError deletecategory", message = e.message.toString())
-
-            }
-        }
-    }
-
-    private fun addCategory(categoryTitle: String = "LLove") {
-        val firebaseFirestore = Firebase.firestore
-
-        viewModelScope.launch(Dispatchers.IO) {
-//            firebaseFirestore.collection("CATEGORIES")
-//                .document(category.title)
-//                .set(data = category, merge = true)
-
-            try {
-                firebaseFirestore.collection("CATEGORIES")
-                    .add(
-                        hashMapOf(
-                            "title" to categoryTitle
-                        )
-                    )
-            } catch (e: Exception) {
-                Napier.d(tag = "onError catch", message = e.message.toString())
+                Napier.d(tag = "onError deleteCategory", message = e.message.toString())
 
             }
         }
