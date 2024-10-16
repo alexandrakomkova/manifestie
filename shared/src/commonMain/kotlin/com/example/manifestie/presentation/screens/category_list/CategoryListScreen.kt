@@ -231,14 +231,12 @@ fun CategoryCard(
                 modifier = Modifier.align(Alignment.TopEnd),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                //offset = DpOffset(x = 40.dp, y = (-40).dp)
             ) {
                 DropdownMenuItem(
                     text = { Text("Edit") },
                     onClick = {
                         Napier.d(tag = "dropdown edit", message = "edit")
-                        // onEvent(AddCategoryEvent.SelectCategory(category))
-                        // onEvent(AddCategoryEvent.OnAddCategoryClick)
+                        onEvent(AddCategoryEvent.SelectCategory(category))
                     }
                 )
                 Divider()

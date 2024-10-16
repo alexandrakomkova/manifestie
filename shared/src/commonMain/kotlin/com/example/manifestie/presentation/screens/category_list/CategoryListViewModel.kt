@@ -87,7 +87,9 @@ class CategoryListViewModel(
             is AddCategoryEvent.SelectCategory -> {
                 _addCategoryState.update { it.copy(
                     selectedCategory = event.category,
-                    // dialogOpen = true
+                    title = event.category.title,
+                    dialogOpen = true,
+                    titleError = null
                 ) }
             }
         }
@@ -100,16 +102,26 @@ class CategoryListViewModel(
         )
 
         if(hasError.isEmpty()) {
-            Napier.d(tag = "submitData", message = addCategoryState.value.toString())
 
-            addCategoryFirestore(
-                Category(title = addCategoryState.value.title)
-            )
+            if(addCategoryState.value.selectedCategory == null) {
+                addCategoryFirestore(
+                    Category(title = addCategoryState.value.title)
+                )
+            } else {
+                addCategoryState.value.selectedCategory?.let { category ->
+                    updateCategory(
+                        Category(
+                            id = category.id,
+                            title = addCategoryState.value.title)
+                    )
+                }
+            }
 
             _addCategoryState.update { it.copy(
                 title = "",
                 titleError = null,
-                dialogOpen = false
+                dialogOpen = false,
+                selectedCategory = null
             ) }
         } else {
             _addCategoryState.update { it.copy(

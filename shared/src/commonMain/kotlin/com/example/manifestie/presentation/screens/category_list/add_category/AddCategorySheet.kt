@@ -42,11 +42,12 @@ fun AddCategorySheet(
 
         Button(
             onClick = {
-                if(state.selectedCategory != null) {
-                    onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
-                } else {
-                    onEvent(AddCategoryEvent.SaveCategory)
-                }
+                onEvent(AddCategoryEvent.SaveCategory)
+//                if(state.selectedCategory != null) {
+//                    onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
+//                } else {
+//                    onEvent(AddCategoryEvent.SaveCategory)
+//                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -54,7 +55,7 @@ fun AddCategorySheet(
             shape = RoundedCornerShape(15.dp),
         ) {
             Text(
-                text = "Save",
+                text = if(state.selectedCategory == null ) "Save" else "Update",
                 color = Color.White,
                 fontSize = 16.sp
             )
