@@ -64,7 +64,7 @@ fun CategoryScreen(
     val sheetState = rememberModalBottomSheetState()
 
     LaunchedEffect(Unit) {
-        viewModel.getCategoryFromFirestore()
+        viewModel.getCategories()
         Napier.d(tag = "CategoryScreen - LaunchedEffect", message = state.toString())
     }
 
@@ -101,7 +101,7 @@ fun CategoryScreen(
                         errorDescription = state.error.toString(),
                         onTryAgainClick = {
                             CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.getCategoryFromFirestore()
+                                viewModel.getCategories()
                             }
                         }
                     )
