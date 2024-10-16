@@ -5,10 +5,12 @@ Kotlin Multiplatform Mobile app that helps stay motivated and inspired
 * Random affirmation
 * Async stunning photo loading from Unsplash
 * Home Screen widget with affirmation
+* Create your own categories and add affirmations!
 
 ## Technologies and libraries
 * Kotlin Mutliplatform Mobile
 * Compose Multiplatform
+* Firestore
 * Ktor
 * [Unsplash API](https://unsplash.com/developers)
 * [ZenQuotes.io](https://zenquotes.io/)
