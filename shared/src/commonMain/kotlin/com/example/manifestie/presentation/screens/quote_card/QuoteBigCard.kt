@@ -1,18 +1,14 @@
-package com.example.manifestie.presentation
+package com.example.manifestie.presentation.screens.quote_card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,62 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
-import com.example.manifestie.core.ErrorBox
-import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
-import org.koin.compose.getKoin
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteState
 
 @Composable
-fun RandomQuoteScreen(
-    modifier: Modifier = Modifier,
-    viewModel: RandomQuoteViewModel = getKoin().get(),
-) {
-    val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(Unit) {
-        //viewModel.getRandomQuote()
-        viewModel.getRandomPhoto()
-        Napier.d(tag = "RandomQuoteScreen - LaunchedEffect", message = state.toString())
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        when {
-            state.isLoading -> {
-                Napier.d(tag = "RandomQuoteScreen", message = "loading")
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-            state.error != null -> {
-                Napier.d(tag = "RandomQuoteScreen", message = "error")
-
-                ErrorBox (
-                    errorDescription = state.error.toString(),
-                    onTryAgainClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            viewModel.getRandomQuote()
-                            viewModel.getRandomPhoto()
-                        }
-                    }
-                )
-            }
-            state.imageUrl.isNotBlank() || state.quote.isNotBlank() -> {
-                Napier.d(tag = "RandomQuoteScreen", message = "show")
-                RandomQuoteScreen(modifier, state)
-            }
-        }
-    }
-}
-
-@Composable
-fun RandomQuoteScreen(
+fun QuoteBigCard(
     modifier: Modifier = Modifier,
     state: RandomQuoteState
 ) {
@@ -100,11 +44,13 @@ fun RandomQuoteScreen(
 
         SubcomposeAsyncImage(
             model = state.imageUrl,
-            contentDescription = "cocktail_img"
+            contentDescription = "quote_background_img"
         ) {
             val painterState = painter.state
             if (painterState is AsyncImagePainter.State.Loading || painterState is AsyncImagePainter.State.Error) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
             } else {
                 Image(
                     painter = painter,
@@ -138,11 +84,8 @@ fun RandomQuoteScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(50.dp)
+                .padding(bottom = 10.dp)
                 .align(Alignment.BottomCenter)
         )
-
-
-
-
     }
 }

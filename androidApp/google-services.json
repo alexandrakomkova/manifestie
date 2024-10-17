@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "962741752435",
+    "project_id": "manifestie-kmm-741e5",
+    "storage_bucket": "manifestie-kmm-741e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962741752435:android:64594bfa261447fc041006",
+        "android_client_info": {
+          "package_name": "com.example.manifestie.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt4YNVQ1DM31KBBCbKRoKVebFJ2sJpddo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

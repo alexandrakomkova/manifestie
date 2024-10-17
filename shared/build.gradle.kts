@@ -1,5 +1,6 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
@@ -9,16 +10,20 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
+    id("com.google.gms.google-services")
 }
 
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "com.example.manifestie.resources"
+    generateResClass = auto
+}
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                //jvmTarget = "1.8"
-                jvmTarget = "11"
-            }
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
     
@@ -52,6 +57,7 @@ kotlin {
             implementation(libs.bundles.ktor)
 
             implementation(libs.bundles.glance)
+            implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -76,6 +82,19 @@ kotlin {
 
             api(libs.datastore)
             api(libs.datastore.preferences)
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
+
+            // implementation(libs.sqldelight.coroutines)
+
+            api(libs.mvvm.core)
+            api(libs.mvvm.compose)
+            api(libs.mvvm.flow)
+            api(libs.mvvm.flow.compose)
+
+            implementation("dev.gitlive:firebase-firestore:1.8.1") // This line
+            implementation("dev.gitlive:firebase-common:1.8.1")// This line
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -98,10 +117,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.material3.android)
-    commonMainApi(libs.mvvm.core)
-    commonMainApi(libs.mvvm.compose)
-    commonMainApi(libs.mvvm.flow)
-    commonMainApi(libs.mvvm.flow.compose)
+    implementation(libs.firebase.firestore.ktx)
 }
 
 fun getUnsplashAccess(): String? {

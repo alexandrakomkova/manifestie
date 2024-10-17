@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation
+package com.example.manifestie.presentation.screens.random_quote
 
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.core.onError
