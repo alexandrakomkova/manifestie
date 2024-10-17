@@ -19,9 +19,16 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,13 +39,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
+import com.example.manifestie.presentation.screens.category_details.CategoryDetailScreen
 import com.example.manifestie.presentation.screens.category_list.CategoryListViewModel
 import com.example.manifestie.presentation.screens.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
@@ -76,6 +88,17 @@ fun NavHostMain(
     val currentScreen = backStackEntry?.destination
 
     Scaffold(
+        topBar = {
+            if(currentScreen?.route == AppScreen.CategoryDetail.route) {
+               getTitle(currentScreen).also {
+                    TopBar(
+                        title = it,
+                        canNavigateBack = currentScreen.route == AppScreen.CategoryDetail.route,
+                        navigateUp = { navController.navigateUp() }
+                    )
+                }
+            }
+        },
         bottomBar = {
             BottomNavigationBar(navController)
         }
@@ -118,7 +141,12 @@ fun NavHostMain(
                 CategoryScreen(
                     viewModel = viewModel,
                     dialogState = dialogState,
-                    onEvent = viewModel::onEvent
+                    onEvent = viewModel::onEvent,
+                    onCategoryClick = {
+                        onNavigate(AppScreen.CategoryDetail.createRoute(
+                            categoryName = it.title
+                        ))
+                    }
                 )
             }
             composable(route = BottomBarScreen.RandomQuote.route) {
@@ -129,9 +157,42 @@ fun NavHostMain(
                 HomeView()
             }
 
+            composable(
+                route = AppScreen.CategoryDetail.route,
+                arguments = AppScreen.CategoryDetail.navArguments
+                ) {
+                CategoryDetailScreen(
+                    onUpClick =  { navController.navigateUp() }
+                )
+            }
+
         }
     }
 
+}
+
+fun getTitle(currentScreen: NavDestination?): String {
+    return when (currentScreen?.route) {
+        BottomBarScreen.QuotesCategoryList.route -> {
+            "Quote Categories"
+        }
+
+        BottomBarScreen.Settings.route -> {
+            "Settings"
+        }
+
+        BottomBarScreen.RandomQuote.route -> {
+            "Random Quote"
+        }
+
+        AppScreen.CategoryDetail.route -> {
+            "Category Detail"
+        }
+
+        else -> {
+            ""
+        }
+    }
 }
 
 fun navigateTo(
@@ -140,6 +201,20 @@ fun navigateTo(
 ) {
     // maybe should add back navigation
     navController.navigate(routeName)
+}
+
+sealed class AppScreen(
+    val route: String,
+    val navArguments: List<NamedNavArgument> = emptyList()
+) {
+    data object CategoryDetail : AppScreen(
+        route = "nav_category_detail/{categoryName}",
+        navArguments = listOf(navArgument("categoryName") {
+            type = NavType.StringType
+        })
+    ) {
+        fun createRoute(categoryName: String) = "nav_category_detail/${categoryName}"
+    }
 }
 
 sealed class BottomBarScreen(
@@ -164,6 +239,33 @@ sealed class BottomBarScreen(
         defaultIcon = Res.drawable.setting_icon
     )
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar(
+    title: String,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = { Text(title) },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "back_button"
+                    )
+                }
+            }
+        }
+    )
 }
 
 @Composable
@@ -279,7 +381,7 @@ private fun navigateBottomBar(
     destination: String
 ) {
     navController.navigate(destination) {
-        navController.graph.startDestinationRoute?.let { route ->
+        navController.graph.startDestinationRoute?.let {
             popUpTo(BottomBarScreen.QuotesCategoryList.route) {
                 saveState = true
             }

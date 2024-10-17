@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-   // onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Category) -> Unit,
     dialogState: AddCategoryState,
     viewModel: CategoryListViewModel,
     onEvent: (AddCategoryEvent) -> Unit,
@@ -127,7 +127,8 @@ fun CategoryScreen(
                         CategoryListBlock(
                             paddingValue = paddingValue,
                             state = state,
-                            onEvent = onEvent
+                            onEvent = onEvent,
+                            onCategoryClick = onCategoryClick
                         )
                     }
                 }
@@ -169,7 +170,8 @@ fun CategoryListBlock(
     modifier: Modifier = Modifier,
     paddingValue: PaddingValues,
     state: CategoryListState,
-    onEvent: (AddCategoryEvent) -> Unit
+    onEvent: (AddCategoryEvent) -> Unit,
+    onCategoryClick: (Category) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
@@ -184,7 +186,8 @@ fun CategoryListBlock(
             CategoryCard(
                 modifier = modifier,
                 category = category,
-                onEvent = { event -> onEvent(event) }
+                onEvent = { event -> onEvent(event) },
+                onCategoryClick =  { onCategoryClick(category) }
             )
         }
     }
@@ -195,7 +198,8 @@ fun CategoryListBlock(
 fun CategoryCard(
     modifier: Modifier = Modifier,
     category: Category,
-    onEvent: (AddCategoryEvent) -> Unit
+    onEvent: (AddCategoryEvent) -> Unit,
+    onCategoryClick: (Category) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -205,6 +209,7 @@ fun CategoryCard(
             .combinedClickable(
                 onClick = {
                     Napier.d(tag = "CategoryListScreen card", message = "on click")
+                    onCategoryClick(category)
                 },
                 onLongClick = {
                     Napier.d(tag = "CategoryListScreen card", message = "on long click")
