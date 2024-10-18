@@ -1,5 +1,6 @@
 package com.example.manifestie.data.repository
 
+import com.example.manifestie.core.FIRESTORE_CATEGORY_LIST
 import com.example.manifestie.domain.model.Category
 import com.example.manifestie.domain.repository.CategoryRepository
 import dev.gitlive.firebase.Firebase
@@ -11,7 +12,7 @@ class FirestoreCategoryRepositoryImpl: CategoryRepository {
     private val firestore = Firebase.firestore
 
     override fun getCategories() = flow {
-        firestore.collection("CATEGORIES").snapshots.collect { querySnapshot ->
+        firestore.collection(FIRESTORE_CATEGORY_LIST).snapshots.collect { querySnapshot ->
             val categoryList = querySnapshot.documents.map { documentSnapshot ->
                 documentSnapshot.data<Category>()
             }
@@ -20,24 +21,24 @@ class FirestoreCategoryRepositoryImpl: CategoryRepository {
     }
 
     override fun getCategoryById(id: String): Flow<Category> = flow {
-        firestore.collection("CATEGORIES").document(id).snapshots.collect { documentSnapshot ->
+        firestore.collection(FIRESTORE_CATEGORY_LIST).document(id).snapshots.collect { documentSnapshot ->
             emit(documentSnapshot.data<Category>())
         }
     }
 
     override suspend fun addCategory(category: Category) {
         val categoryId = generateRandomStringId()
-        firestore.collection("CATEGORIES")
+        firestore.collection(FIRESTORE_CATEGORY_LIST)
             .document(categoryId)
             .set(category.copy(id = categoryId))
     }
 
     override suspend fun updateCategory(category: Category) {
-        firestore.collection("CATEGORIES").document(category.id).set(category)
+        firestore.collection(FIRESTORE_CATEGORY_LIST).document(category.id).set(category)
     }
 
     override suspend fun deleteCategory(category: Category) {
-        firestore.collection("CATEGORIES").document(category.id).delete()
+        firestore.collection(FIRESTORE_CATEGORY_LIST).document(category.id).delete()
     }
 
     private fun generateRandomStringId(length: Int = 20): String {
