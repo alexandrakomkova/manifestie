@@ -51,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
 import com.example.manifestie.presentation.screens.category_details.CategoryDetailScreen
+import com.example.manifestie.presentation.screens.category_details.CategoryDetailViewModel
 import com.example.manifestie.presentation.screens.category_list.CategoryListViewModel
 import com.example.manifestie.presentation.screens.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
@@ -61,6 +62,7 @@ import com.example.manifestie.resources.nav_random_quote
 import com.example.manifestie.resources.nav_settings
 import com.example.manifestie.resources.setting_icon
 import com.example.manifestie.resources.sparkles_icon
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -143,8 +145,9 @@ fun NavHostMain(
                     dialogState = dialogState,
                     onEvent = viewModel::onEvent,
                     onCategoryClick = {
+                        Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
                         onNavigate(AppScreen.CategoryDetail.createRoute(
-                            categoryName = it.title
+                            categoryId = it.id
                         ))
                     }
                 )
@@ -161,7 +164,9 @@ fun NavHostMain(
                 route = AppScreen.CategoryDetail.route,
                 arguments = AppScreen.CategoryDetail.navArguments
                 ) {
+                val viewModel: CategoryDetailViewModel = getKoin().get()
                 CategoryDetailScreen(
+                    viewModel = viewModel,
                     onUpClick =  { navController.navigateUp() }
                 )
             }
@@ -208,12 +213,12 @@ sealed class AppScreen(
     val navArguments: List<NamedNavArgument> = emptyList()
 ) {
     data object CategoryDetail : AppScreen(
-        route = "nav_category_detail/{categoryName}",
-        navArguments = listOf(navArgument("categoryName") {
+        route = "nav_category_detail/{categoryId}",
+        navArguments = listOf(navArgument("categoryId") {
             type = NavType.StringType
         })
     ) {
-        fun createRoute(categoryName: String) = "nav_category_detail/${categoryName}"
+        fun createRoute(categoryId: String) = "nav_category_detail/${categoryId}"
     }
 }
 

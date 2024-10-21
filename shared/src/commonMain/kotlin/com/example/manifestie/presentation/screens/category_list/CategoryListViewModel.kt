@@ -167,16 +167,6 @@ class CategoryListViewModel(
                     )
                 }
 
-//                firestoreCategoryRepositoryImpl.getCategories().map { it ->
-//                    _state.update { categoryListState ->
-//                        categoryListState.copy(
-//                            isLoading = false,
-//                            error = null,
-//                            categories = it
-//                        )
-//                    }
-//                }
-
                 firestoreCategoryRepositoryImpl.getCategories().flowOn(Dispatchers.IO)
                     .collect { result ->
                         _state.update { categoryListState ->

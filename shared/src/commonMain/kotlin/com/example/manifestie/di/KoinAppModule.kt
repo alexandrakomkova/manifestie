@@ -14,10 +14,13 @@ val appModule = module {
     }
 
     single {
-       CategoryListViewModel( firestoreCategoryRepositoryImpl = get())
+       CategoryListViewModel(firestoreCategoryRepositoryImpl = get())
     }
 
     single {
-        CategoryDetailViewModel( firestoreCategoryDetailRepositoryImpl = get())
+        CategoryDetailViewModel(
+            firestoreCategoryDetailRepositoryImpl = get(),
+            savedStateHandle = get()
+        )
     }
 }

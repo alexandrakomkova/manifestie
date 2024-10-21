@@ -11,3 +11,5 @@ val QUOTE_WIDGET = stringPreferencesKey("quote_widget")
 
 const val FIRESTORE_CATEGORY_LIST = "CATEGORIES"
 const val FIRESTORE_QUOTE_LIST = "quotes"
+
+const val NAV_CATEGORY_DETAIL = "categoryId"

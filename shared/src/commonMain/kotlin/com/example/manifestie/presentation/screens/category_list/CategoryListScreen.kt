@@ -86,7 +86,7 @@ fun CategoryScreen(
     ) { paddingValue ->
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             when {
@@ -113,7 +113,7 @@ fun CategoryScreen(
                         exit = scaleOut() + fadeOut()
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             text = "Add your first category!",
                             color = Color.Black,
@@ -146,13 +146,12 @@ fun CategoryScreen(
                 tonalElevation = 16.dp,
                 dragHandle = {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(8.dp)
                             .width(50.dp)
                             .height(6.dp)
                             .clip(RoundedCornerShape(50))
                             .background(MaterialTheme.colorScheme.primary)
-                            //.align(Alignment.Center)
                     )
                 }
             ) {
@@ -175,7 +174,7 @@ fun CategoryListBlock(
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(10.dp)
             .padding(paddingValue),
@@ -187,7 +186,10 @@ fun CategoryListBlock(
                 modifier = modifier,
                 category = category,
                 onEvent = { event -> onEvent(event) },
-                onCategoryClick =  { onCategoryClick(category) }
+                onCategoryClick =  {
+                    Napier.d(tag = "CategoryListBlock", message = "${category.id} - ${category.title}")
+                    onCategoryClick(category)
+                }
             )
         }
     }
