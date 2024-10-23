@@ -1,11 +1,14 @@
-package com.example.manifestie.presentation.screens.category_list
+package com.example.manifestie.presentation.screens.category
 
 import com.example.manifestie.domain.model.Category
+import com.example.manifestie.domain.model.Quote
 
-data class CategoryListState(
+data class CategorySharedState(
     val isLoading: Boolean = false,
     val categories: List<Category> = emptyList(),
-    val error: String? = null
+    val quotes: List<Quote> = emptyList(),
+    val error: String? = null,
+    val selectedCategoryForQuotes: Category? = null
 )
 
 sealed interface AddCategoryEvent {
@@ -25,4 +28,3 @@ data class AddCategoryState (
     val dialogOpen: Boolean = false,
     val selectedCategory: Category? = null
 )
-

@@ -43,17 +43,14 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
-import com.example.manifestie.presentation.screens.category_details.CategoryDetailScreen
-import com.example.manifestie.presentation.screens.category_details.CategoryDetailViewModel
-import com.example.manifestie.presentation.screens.category_list.CategoryListViewModel
-import com.example.manifestie.presentation.screens.category_list.CategoryScreen
+import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
+import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailScreen
+import com.example.manifestie.presentation.screens.category.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
@@ -136,10 +133,9 @@ fun NavHostMain(
                 )
             }
         ) {
-            val viewModelCategoryDetail: CategoryDetailViewModel = getKoin().get()
+            val viewModel: CategorySharedViewModel = getKoin().get()
 
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                val viewModel: CategoryListViewModel = getKoin().get()
                 val dialogState by viewModel.addCategoryState.collectAsState()
 
                 CategoryScreen(
@@ -149,11 +145,23 @@ fun NavHostMain(
                     onCategoryClick = {
                         Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
 
-                        viewModelCategoryDetail.updateSelectedCategory(it)
+                        viewModel.updateSelectedCategory(it)
                         onNavigate(AppScreen.CategoryDetail.route)
                     }
                 )
             }
+
+            composable(
+                route = AppScreen.CategoryDetail.route,
+                arguments = AppScreen.CategoryDetail.navArguments
+            ) {
+
+                CategoryDetailScreen(
+                    viewModel = viewModel,
+                    onUpClick =  { navController.navigateUp() }
+                )
+            }
+
             composable(route = BottomBarScreen.RandomQuote.route) {
                 RandomQuoteScreen()
             }
@@ -161,19 +169,6 @@ fun NavHostMain(
             composable(route = BottomBarScreen.Settings.route) {
                 HomeView()
             }
-
-            composable(
-                route = AppScreen.CategoryDetail.route,
-                arguments = AppScreen.CategoryDetail.navArguments
-                ) {
-               // val categoryDetailViewModel: CategoryDetailViewModel = getKoin().get()
-
-                CategoryDetailScreen(
-                    viewModel = viewModelCategoryDetail,
-                    onUpClick =  { navController.navigateUp() }
-                )
-            }
-
         }
     }
 

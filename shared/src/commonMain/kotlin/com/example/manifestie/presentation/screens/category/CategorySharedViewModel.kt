@@ -1,10 +1,9 @@
-package com.example.manifestie.presentation.screens.category_list
+package com.example.manifestie.presentation.screens.category
 
 import com.example.manifestie.core.NetworkError
-import com.example.manifestie.data.repository.FirestoreCategoryRepositoryImpl
+import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.presentation.screens.category_details.CategoryDetailState
-import com.example.manifestie.presentation.screens.category_list.add_category.CategoryValidation
+import com.example.manifestie.presentation.screens.category.category_list.add_category.CategoryValidation
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
@@ -17,16 +16,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class CategoryListViewModel(
-    private val firestoreCategoryRepositoryImpl: FirestoreCategoryRepositoryImpl
+class CategorySharedViewModel(
+    private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
 ): ViewModel(), KoinComponent {
-    private val _state = MutableStateFlow(CategoryListState())
+
+    private val _state = MutableStateFlow(CategorySharedState())
     val state = _state.asStateFlow()
 
     private val _addCategoryState = MutableStateFlow(AddCategoryState())
     val addCategoryState = _addCategoryState.asStateFlow()
 
-    private val categoryDetailState = MutableStateFlow(CategoryDetailState())
 
     fun onEvent(event: AddCategoryEvent) {
         when (event) {
@@ -149,7 +148,7 @@ class CategoryListViewModel(
     private fun addCategory(category: Category) {
         viewModelScope.launch {
             try {
-                firestoreCategoryRepositoryImpl.addCategory(category = category)
+                firestoreCategorySharedRepositoryImpl.addCategory(category = category)
                 Napier.d(tag = "addCategory", message = category.toString())
             } catch (e: Exception) {
                 Napier.d(tag = "onError addCategory", message = e.message.toString())
@@ -169,7 +168,7 @@ class CategoryListViewModel(
                     )
                 }
 
-                firestoreCategoryRepositoryImpl.getCategories().flowOn(Dispatchers.IO)
+                firestoreCategorySharedRepositoryImpl.getCategories().flowOn(Dispatchers.IO)
                     .collect { result ->
                         _state.update { categoryListState ->
                             categoryListState.copy(
@@ -195,7 +194,7 @@ class CategoryListViewModel(
     private fun updateCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                firestoreCategoryRepositoryImpl.updateCategory(category)
+                firestoreCategorySharedRepositoryImpl.updateCategory(category)
             } catch (e: Exception) {
                 Napier.d(tag = "onError updateCategory", message = e.message.toString())
 
@@ -206,7 +205,7 @@ class CategoryListViewModel(
     private fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                firestoreCategoryRepositoryImpl.deleteCategory(category)
+                firestoreCategorySharedRepositoryImpl.deleteCategory(category)
                 Napier.d(tag = "deleteCategory", message = category.toString())
             } catch (e: Exception) {
                 Napier.d(tag = "onError deleteCategory", message = e.message.toString())
@@ -214,5 +213,64 @@ class CategoryListViewModel(
             }
         }
     }
-}
 
+    fun getQuotesByCategoryId() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _state.update {
+                    it.copy(
+                        isLoading = true,
+                        error = null,
+                        quotes = emptyList()
+                    )
+                }
+
+                when(state.value.selectedCategoryForQuotes?.id) {
+                    null, "" -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = null,
+                                quotes = emptyList()
+                            )
+                        }
+                    }
+
+                    else -> {
+                        firestoreCategorySharedRepositoryImpl.getQuotesByCategoryId(state.value.selectedCategoryForQuotes!!.id)
+                            .flowOn(Dispatchers.IO)
+                            .collect { result ->
+                                _state.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        error = null,
+                                        quotes = result
+                                    )
+                                }
+                            }
+                    }
+                }
+
+                Napier.d(tag = "getQuotesByCategoryId", message = state.value.toString())
+            } catch (e: Exception) {
+                Napier.d(tag = "onError getQuotesByCategoryId", message = e.message.toString())
+                _state.update {
+                    it.copy(
+                        error = NetworkError.NO_INTERNET.errorDescription,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateSelectedCategory(category: Category) {
+        _state.update {
+            it.copy(
+                selectedCategoryForQuotes = category
+            )
+        }
+        Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
+    }
+
+}
