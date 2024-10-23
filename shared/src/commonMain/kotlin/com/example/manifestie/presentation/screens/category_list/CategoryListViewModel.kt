@@ -3,6 +3,7 @@ package com.example.manifestie.presentation.screens.category_list
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategoryRepositoryImpl
 import com.example.manifestie.domain.model.Category
+import com.example.manifestie.presentation.screens.category_details.CategoryDetailState
 import com.example.manifestie.presentation.screens.category_list.add_category.CategoryValidation
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
@@ -12,7 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -25,6 +25,8 @@ class CategoryListViewModel(
 
     private val _addCategoryState = MutableStateFlow(AddCategoryState())
     val addCategoryState = _addCategoryState.asStateFlow()
+
+    private val categoryDetailState = MutableStateFlow(CategoryDetailState())
 
     fun onEvent(event: AddCategoryEvent) {
         when (event) {

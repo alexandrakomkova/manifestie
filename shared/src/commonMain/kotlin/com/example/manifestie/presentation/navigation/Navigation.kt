@@ -136,6 +136,8 @@ fun NavHostMain(
                 )
             }
         ) {
+            val viewModelCategoryDetail: CategoryDetailViewModel = getKoin().get()
+
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
                 val viewModel: CategoryListViewModel = getKoin().get()
                 val dialogState by viewModel.addCategoryState.collectAsState()
@@ -146,9 +148,9 @@ fun NavHostMain(
                     onEvent = viewModel::onEvent,
                     onCategoryClick = {
                         Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
-                        onNavigate(AppScreen.CategoryDetail.createRoute(
-                            categoryId = it.id
-                        ))
+
+                        viewModelCategoryDetail.updateSelectedCategory(it)
+                        onNavigate(AppScreen.CategoryDetail.route)
                     }
                 )
             }
@@ -164,9 +166,10 @@ fun NavHostMain(
                 route = AppScreen.CategoryDetail.route,
                 arguments = AppScreen.CategoryDetail.navArguments
                 ) {
-                val viewModel: CategoryDetailViewModel = getKoin().get()
+               // val categoryDetailViewModel: CategoryDetailViewModel = getKoin().get()
+
                 CategoryDetailScreen(
-                    viewModel = viewModel,
+                    viewModel = viewModelCategoryDetail,
                     onUpClick =  { navController.navigateUp() }
                 )
             }
@@ -212,14 +215,7 @@ sealed class AppScreen(
     val route: String,
     val navArguments: List<NamedNavArgument> = emptyList()
 ) {
-    data object CategoryDetail : AppScreen(
-        route = "nav_category_detail/{categoryId}",
-        navArguments = listOf(navArgument("categoryId") {
-            type = NavType.StringType
-        })
-    ) {
-        fun createRoute(categoryId: String) = "nav_category_detail/${categoryId}"
-    }
+    data object CategoryDetail: AppScreen("nav_category_detail")
 }
 
 sealed class BottomBarScreen(

@@ -1,9 +1,8 @@
 package com.example.manifestie.presentation.screens.category_details
 
-import androidx.lifecycle.SavedStateHandle
-import com.example.manifestie.core.NAV_CATEGORY_DETAIL
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategoryDetailRepositoryImpl
+import com.example.manifestie.domain.model.Category
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
@@ -17,13 +16,15 @@ import org.koin.core.component.KoinComponent
 
 class CategoryDetailViewModel(
     private val firestoreCategoryDetailRepositoryImpl: FirestoreCategoryDetailRepositoryImpl,
-    val savedStateHandle: SavedStateHandle,
 ): ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(CategoryDetailState())
     val state = _state.asStateFlow()
 
-    private val categoryId: String = savedStateHandle.get<String>(NAV_CATEGORY_DETAIL) ?: ""
+    private val categoryId = state.value.category?.id ?: ""
 
+    init {
+        getQuotesByCategoryId()
+    }
 
     fun getQuotesByCategoryId() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,6 +37,7 @@ class CategoryDetailViewModel(
                     )
                 }
 
+                Napier.d(tag = "categoryId", message = categoryId)
                 if(categoryId.isEmpty()) {
                     _state.update { categoryDetailState ->
                         categoryDetailState.copy(
@@ -44,6 +46,7 @@ class CategoryDetailViewModel(
                             quotes = emptyList()
                         )
                     }
+                    Napier.d(tag = "getQuotesByCategoryId", message = "empty")
                 } else {
                     firestoreCategoryDetailRepositoryImpl.getQuotesByCategoryId(categoryId).flowOn(Dispatchers.IO)
                         .collect { result ->
@@ -54,8 +57,12 @@ class CategoryDetailViewModel(
                                     quotes = result
                                 )
                             }
+
+                            Napier.d(tag = "getQuotesByCategoryId", message = result.toString())
                         }
                 }
+
+                Napier.d(tag = "getQuotesByCategoryId", message = state.value.toString())
 
             } catch (e: Exception) {
                 Napier.d(tag = "onError getQuotesByCategoryId", message = e.message.toString())
@@ -67,5 +74,15 @@ class CategoryDetailViewModel(
                 }
             }
         }
+    }
+
+    fun updateSelectedCategory(category: Category) {
+        _state.update {
+            it.copy(
+                category = category
+            )
+        }
+
+        Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
     }
 }
