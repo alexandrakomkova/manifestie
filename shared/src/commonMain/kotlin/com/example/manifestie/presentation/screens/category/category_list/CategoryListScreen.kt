@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list
+package com.example.manifestie.presentation.screens.category.category_list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -44,12 +44,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.presentation.screens.category_list.add_category.AddCategorySheet
+import com.example.manifestie.presentation.screens.category.AddCategoryEvent
+import com.example.manifestie.presentation.screens.category.AddCategoryState
+import com.example.manifestie.presentation.screens.category.CategorySharedState
+import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
+import com.example.manifestie.presentation.screens.category.category_list.add_category.AddCategorySheet
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +63,7 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
     onCategoryClick: (Category) -> Unit,
     dialogState: AddCategoryState,
-    viewModel: CategoryListViewModel,
+    viewModel: CategorySharedViewModel,
     onEvent: (AddCategoryEvent) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -168,7 +174,7 @@ fun CategoryScreen(
 fun CategoryListBlock(
     modifier: Modifier = Modifier,
     paddingValue: PaddingValues,
-    state: CategoryListState,
+    state: CategorySharedState,
     onEvent: (AddCategoryEvent) -> Unit,
     onCategoryClick: (Category) -> Unit
 ) {

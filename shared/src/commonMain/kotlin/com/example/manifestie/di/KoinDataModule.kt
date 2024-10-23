@@ -1,15 +1,13 @@
 package com.example.manifestie.di
 
 import com.example.manifestie.data.datastore.DataStoreHelper
-import com.example.manifestie.data.repository.FirestoreCategoryDetailRepositoryImpl
-import com.example.manifestie.data.repository.FirestoreCategoryRepositoryImpl
+import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
-import com.example.manifestie.domain.repository.CategoryDetailRepository
-import com.example.manifestie.domain.repository.CategoryRepository
+import com.example.manifestie.domain.repository.CategorySharedRepository
 import com.example.manifestie.domain.repository.UnsplashRepository
 import com.example.manifestie.domain.repository.ZenQuotesRepository
-import com.example.manifestie.presentation.screens.category_list.add_category.CategoryValidation
+import com.example.manifestie.presentation.screens.category.category_list.add_category.CategoryValidation
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -23,12 +21,8 @@ val dataModule = module {
     } bind UnsplashRepository::class
 
     single {
-        FirestoreCategoryRepositoryImpl()
-    } bind CategoryRepository::class
-
-    single {
-        FirestoreCategoryDetailRepositoryImpl()
-    } bind CategoryDetailRepository::class
+        FirestoreCategorySharedRepositoryImpl()
+    } bind CategorySharedRepository::class
 
     single { DataStoreHelper }
     single { CategoryValidation }

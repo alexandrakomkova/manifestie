@@ -1,14 +1,16 @@
 package com.example.manifestie.data.repository
 
 import com.example.manifestie.core.FIRESTORE_CATEGORY_LIST
+import com.example.manifestie.core.FIRESTORE_QUOTE_LIST
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.domain.repository.CategoryRepository
+import com.example.manifestie.domain.model.Quote
+import com.example.manifestie.domain.repository.CategorySharedRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FirestoreCategoryRepositoryImpl: CategoryRepository {
+class FirestoreCategorySharedRepositoryImpl: CategorySharedRepository {
     private val firestore = Firebase.firestore
 
     override fun getCategories() = flow {
@@ -41,11 +43,23 @@ class FirestoreCategoryRepositoryImpl: CategoryRepository {
         firestore.collection(FIRESTORE_CATEGORY_LIST).document(category.id).delete()
     }
 
+    override fun getQuotesByCategoryId(categoryId: String): Flow<List<Quote>> = flow {
+        firestore
+            .collection(FIRESTORE_CATEGORY_LIST)
+            .document(categoryId)
+            .collection(FIRESTORE_QUOTE_LIST)
+            .snapshots.collect { querySnapshot ->
+                val quoteList = querySnapshot.documents.map { documentSnapshot ->
+                    documentSnapshot.data<Quote>()
+                }
+                emit(quoteList)
+            }
+    }
+
     private fun generateRandomStringId(length: Int = 20): String {
         val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         return (1..length)
             .map { allowedChars.random() }
             .joinToString("")
     }
-
 }

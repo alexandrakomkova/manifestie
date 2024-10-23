@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list.add_category
+package com.example.manifestie.presentation.screens.category.category_list.add_category
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.manifestie.presentation.screens.category_list.AddCategoryEvent
-import com.example.manifestie.presentation.screens.category_list.AddCategoryState
+import com.example.manifestie.presentation.screens.category.AddCategoryEvent
+import com.example.manifestie.presentation.screens.category.AddCategoryState
 
 @Composable
 fun AddCategorySheet(

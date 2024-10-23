@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_details
+package com.example.manifestie.presentation.screens.category.category_details
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -36,17 +36,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.presentation.screens.category.CategorySharedState
+import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun CategoryDetailScreen(
     modifier: Modifier = Modifier,
     onUpClick: () -> Unit,
-    viewModel: CategoryDetailViewModel
+    viewModel: CategorySharedViewModel
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -108,7 +111,7 @@ fun CategoryDetailScreen(
 @Composable
 fun QuotesList(
     modifier: Modifier = Modifier,
-    state: CategoryDetailState
+    state: CategorySharedState
 ) {
 
     LazyVerticalStaggeredGrid(

@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list.add_category
+package com.example.manifestie.presentation.screens.category.category_list.add_category
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
