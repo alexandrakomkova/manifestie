@@ -13,17 +13,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -36,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.domain.model.Quote
 import com.example.manifestie.presentation.screens.category.CategorySharedState
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import io.github.aakira.napier.Napier
@@ -123,7 +134,7 @@ fun QuotesList(
     ) {
         items(state.quotes) { quote ->
             QuoteCard(
-
+                quote = quote
             )
         }
     }
@@ -131,7 +142,10 @@ fun QuotesList(
 }
 
 @Composable
-fun QuoteCard(modifier: Modifier = Modifier) {
+fun QuoteCard(
+    modifier: Modifier = Modifier,
+    quote: Quote
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -155,26 +169,57 @@ fun QuoteCard(modifier: Modifier = Modifier) {
             }
         }
 
-
         Box(
             modifier = modifier
                 .height(200.dp)
                 .background(largeRadialGradient),
-            contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "Life is too short to stay angry. Today I'm choosing to be happy and free.",
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
+                var expanded by remember { mutableStateOf(false) }
+
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.TopEnd)
+                ) {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "More"
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Edit") },
+                            onClick = {  }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Delete") },
+                            onClick = {  }
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = modifier.fillMaxWidth().padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = quote.quote, // "Life is too short to stay angry. Today I'm choosing to be happy and free.",
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                }
+
 
             }
         }
