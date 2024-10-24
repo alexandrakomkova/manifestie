@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("co.touchlab.skie")
-    id("com.google.gms.google-services")
 }
 
 compose.resources {
@@ -57,7 +56,8 @@ kotlin {
             implementation(libs.bundles.ktor)
 
             implementation(libs.bundles.glance)
-            implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
+            //implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
+            implementation("com.google.gms:google-services:4.4.2")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -83,18 +83,18 @@ kotlin {
             api(libs.datastore)
             api(libs.datastore.preferences)
 
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha02")
-
-            // implementation(libs.sqldelight.coroutines)
+            implementation(libs.navigation.compose)
 
             api(libs.mvvm.core)
             api(libs.mvvm.compose)
             api(libs.mvvm.flow)
             api(libs.mvvm.flow.compose)
 
-            implementation("dev.gitlive:firebase-firestore:1.8.1") // This line
-            implementation("dev.gitlive:firebase-common:1.8.1")// This line
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation(libs.firebase.firestore)
+            implementation(libs.firebase.common)
+            implementation(libs.kotlinx.serialization.json)
+
+            //implementation("com.google.android.gms:play-services:17.0.0")
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)

@@ -14,8 +14,20 @@ plugins {
 }
 
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
     dependencies {
-        //classpath("dev.icerock.moko:resources-generator:0.24.2")
-        classpath("app.cash.sqldelight:gradle-plugin:2.0.1")
+        classpath("com.android.tools.build:gradle:7.0.0") // Ensure this matches your Android Gradle plugin version
+        classpath("com.google.gms:google-services:4.4.2") // Add this line
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
 }
