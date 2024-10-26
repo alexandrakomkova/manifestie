@@ -108,7 +108,9 @@ fun QuoteBigCard(
                 androidx.compose.material3.IconToggleButton(
                     modifier = modifier.size(48.dp),
                     checked = checked.value,
-                    onCheckedChange = { checked.value = it }
+                    onCheckedChange = {
+                        checked.value = it
+                    }
                 ) {
                     androidx.compose.material3.Icon(
                         if (checked.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

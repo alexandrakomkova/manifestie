@@ -43,11 +43,6 @@ fun AddCategorySheet(
         Button(
             onClick = {
                 onEvent(AddCategoryEvent.SaveCategory)
-//                if(state.selectedCategory != null) {
-//                    onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
-//                } else {
-//                    onEvent(AddCategoryEvent.SaveCategory)
-//                }
             },
             modifier = Modifier
                 .fillMaxWidth()
