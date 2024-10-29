@@ -13,20 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
@@ -45,8 +42,11 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.presentation.screens.components.ErrorBox
 import com.example.manifestie.domain.model.Quote
+import com.example.manifestie.presentation.screens.category.AddQuoteEvent
+import com.example.manifestie.presentation.screens.category.AddQuoteSheetState
+import com.example.manifestie.presentation.screens.category.CategoryDetailEvent
 import com.example.manifestie.presentation.screens.category.CategorySharedState
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import io.github.aakira.napier.Napier
@@ -60,7 +60,9 @@ import kotlinx.coroutines.launch
 fun CategoryDetailScreen(
     modifier: Modifier = Modifier,
     onUpClick: () -> Unit,
-    viewModel: CategorySharedViewModel
+    viewModel: CategorySharedViewModel,
+    addQuoteSheetState: AddQuoteSheetState,
+    onEvent: (CategoryDetailEvent) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -108,8 +110,10 @@ fun CategoryDetailScreen(
                     enter =  scaleIn() + fadeIn(),
                     exit = scaleOut() + fadeOut()
                 ) {
-                    QuotesList(
-                        state = state
+                    CategoryDetailScreen(
+                        state = state,
+                        onEvent = { event -> onEvent(event)},
+                        addQuoteSheetState = addQuoteSheetState
                     )
                 }
             }
@@ -119,12 +123,87 @@ fun CategoryDetailScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryDetailScreen(
+    modifier: Modifier = Modifier,
+    state: CategorySharedState,
+    addQuoteSheetState: AddQuoteSheetState,
+    onEvent: (CategoryDetailEvent) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            QuotesList(
+                modifier = Modifier.weight(1f),
+                state = state,
+                onEvent = { event -> onEvent(event)}
+            )
+            Button(
+                onClick = {
+                    onEvent(AddQuoteEvent.OnAddQuoteClick)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .height(55.dp)
+                    //.padding(16.dp)
+                        ,
+                colors = ButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = Color.White,
+                    disabledContentColor = Color.LightGray,
+                    disabledContainerColor = Color.DarkGray
+                ),
+                shape = RoundedCornerShape(15.dp),
+            ) {
+                Text(
+                    text = "Create affirmation",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            }
+        }
+    }
+
+    if(addQuoteSheetState.sheetOpen) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onEvent(AddQuoteEvent.OnQuoteSheetDismiss)
+            },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            tonalElevation = 16.dp,
+            dragHandle = {
+                Box(
+                    modifier = modifier
+                        .padding(8.dp)
+                        .width(50.dp)
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+            }
+        ) {
+            AddQuoteSheet(
+                modifier = modifier,
+                addQuoteState = addQuoteSheetState,
+                state = state,
+                onEvent = { event -> onEvent(event) }
+            )
+
+        }
+    }
+}
+
 @Composable
 fun QuotesList(
     modifier: Modifier = Modifier,
-    state: CategorySharedState
+    state: CategorySharedState,
+    onEvent: (CategoryDetailEvent) -> Unit
 ) {
-
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(1),
         modifier = modifier
@@ -134,7 +213,8 @@ fun QuotesList(
     ) {
         items(state.quotes) { quote ->
             QuoteCard(
-                quote = quote
+                quote = quote,
+                onEvent = { event -> onEvent(event)}
             )
         }
     }
@@ -144,7 +224,8 @@ fun QuotesList(
 @Composable
 fun QuoteCard(
     modifier: Modifier = Modifier,
-    quote: Quote
+    quote: Quote,
+    onEvent: (CategoryDetailEvent) -> Unit
 ) {
     Card(
         modifier = modifier
@@ -203,7 +284,10 @@ fun QuoteCard(
                         )
                         DropdownMenuItem(
                             text = { Text("Delete") },
-                            onClick = {  }
+                            onClick = {
+                                onEvent(CategoryDetailEvent.SelectQuote(quote))
+                                onEvent(CategoryDetailEvent.DeleteQuoteFromCategory)
+                            }
                         )
                     }
                 }
