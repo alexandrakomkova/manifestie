@@ -8,7 +8,8 @@ import com.example.manifestie.domain.repository.CategoryRepository
 import com.example.manifestie.domain.repository.QuoteRepository
 import com.example.manifestie.domain.repository.UnsplashRepository
 import com.example.manifestie.domain.repository.ZenQuotesRepository
-import com.example.manifestie.presentation.screens.category.category_list.add_category.CategoryValidation
+import com.example.manifestie.domain.validation.CategoryValidation
+import com.example.manifestie.domain.validation.QuoteValidation
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -28,4 +29,5 @@ val dataModule = module {
 
     single { DataStoreHelper }
     single { CategoryValidation }
+    single { QuoteValidation }
 }
