@@ -33,7 +33,7 @@ fun AddCategorySheet(
             labelText = "Title",
             title = state.title,
             setTitle = { onEvent(AddCategoryEvent.OnCategoryTitleChanged(it)) } ,
-            maxLines = 20,
+            maxLines = 2,
             hasError = state.titleError != null,
             errorMessage = state.titleError
         )
