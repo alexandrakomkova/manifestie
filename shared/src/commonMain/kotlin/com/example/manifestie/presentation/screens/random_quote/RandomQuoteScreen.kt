@@ -23,8 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.manifestie.core.ErrorBox
-import com.example.manifestie.presentation.screens.category.AddCategoryEvent
-import com.example.manifestie.presentation.screens.category.category_list.add_category.AddCategorySheet
 import com.example.manifestie.presentation.screens.quote_card.QuoteBigCard
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope

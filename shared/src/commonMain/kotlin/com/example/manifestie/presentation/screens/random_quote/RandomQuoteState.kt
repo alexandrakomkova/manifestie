@@ -1,7 +1,6 @@
 package com.example.manifestie.presentation.screens.random_quote
 
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.presentation.screens.category.AddCategoryEvent
 
 data class RandomQuoteState (
     val isLoading: Boolean = false,
