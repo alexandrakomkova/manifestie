@@ -3,6 +3,7 @@ package com.example.manifestie.presentation.screens.category
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.domain.model.Category
+import com.example.manifestie.domain.model.Quote
 import com.example.manifestie.presentation.screens.category.category_list.add_category.CategoryValidation
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
@@ -23,20 +24,83 @@ class CategorySharedViewModel(
     private val _state = MutableStateFlow(CategorySharedState())
     val state = _state.asStateFlow()
 
-    private val _addCategoryState = MutableStateFlow(AddCategoryState())
+    private val _addCategoryState = MutableStateFlow(AddCategorySheetState())
     val addCategoryState = _addCategoryState.asStateFlow()
 
+    private val _addQuoteState = MutableStateFlow(AddQuoteSheetState())
+    val addQuoteState = _addQuoteState.asStateFlow()
+
+    fun onEvent(event: CategoryDetailEvent) {
+        when(event) {
+            is CategoryDetailEvent.DeleteQuoteFromCategory -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    state.value.selectedCategoryForQuotes?.let { category ->
+                        state.value.selectedQuote?.let { quote ->
+                            deleteQuoteFromCategory(
+                                quote = quote,
+                                categoryId = category.id
+                            )
+                        }
+                    }
+                    delay(300L)
+                    _state.update { it.copy(
+                        selectedCategoryForQuotes = null,
+                        selectedQuote = null
+                    ) }
+
+                    Napier.d(tag = "DeleteQuoteFromCategory", message = state.value.toString())
+                }
+            }
+
+            is CategoryDetailEvent.SelectCategory -> {
+                _state.update { it.copy(
+                    selectedCategoryForQuotes = event.category
+                ) }
+            }
+            is CategoryDetailEvent.SelectQuote -> {
+                _state.update { it.copy(
+                    selectedQuote = event.quote
+                ) }
+            }
+
+            AddQuoteEvent.OnAddQuoteClick -> {
+                _addQuoteState.update { it.copy(
+                    sheetOpen = true
+                ) }
+                Napier.d(tag = "OnAddQuoteClick", message = addQuoteState.value.toString())
+            }
+            is AddQuoteEvent.OnQuoteContentChanged -> {
+                _addQuoteState.update { it.copy(
+                    quote = event.quote
+                ) }
+                Napier.d(tag = "OnQuoteContentChanged", message = addQuoteState.value.toString())
+            }
+            AddQuoteEvent.OnQuoteSheetDismiss -> {
+                viewModelScope.launch {
+                    _addQuoteState.update {
+                        it.copy(
+                            sheetOpen = false,
+                            quoteError = null
+                        )
+                    }
+                    delay(300L) // Animation delay
+                }
+            }
+            AddQuoteEvent.SaveQuote -> {
+                submitQuote()
+            }
+        }
+    }
 
     fun onEvent(event: AddCategoryEvent) {
         when (event) {
             AddCategoryEvent.OnAddCategoryClick -> {
                 _addCategoryState.update {
                     it.copy(
-                        dialogOpen = true
+                        sheetOpen = true
                     )
                 }
                 Napier.d(tag = "OnAddCategoryClick", message = addCategoryState.value.toString())
-
             }
 
             is AddCategoryEvent.OnCategoryTitleChanged -> {
@@ -49,18 +113,17 @@ class CategorySharedViewModel(
                     tag = "OnCategoryTitleChanged",
                     message = addCategoryState.value.toString()
                 )
-
             }
 
             AddCategoryEvent.SaveCategory -> {
                 submitData()
             }
 
-            AddCategoryEvent.OnCategoryDialogDismiss -> {
+            AddCategoryEvent.OnCategorySheetDismiss -> {
                 viewModelScope.launch {
                     _addCategoryState.update {
                         it.copy(
-                            dialogOpen = false,
+                            sheetOpen = false,
                             titleError = null
                         )
                     }
@@ -78,7 +141,7 @@ class CategorySharedViewModel(
                     _addCategoryState.update {
                         it.copy(
                             selectedCategory = null,
-                            dialogOpen = false,
+                            sheetOpen = false,
                             title = "",
                             titleError = null
                         )
@@ -94,13 +157,15 @@ class CategorySharedViewModel(
                     it.copy(
                         selectedCategory = event.category,
                         title = event.category.title,
-                        dialogOpen = true,
+                        sheetOpen = true,
                         titleError = null
                     )
                 }
             }
         }
     }
+
+    private fun submitQuote() { }
 
     private fun submitData() {
         val result = CategoryValidation.validateCategoryTitle(addCategoryState.value.title)
@@ -129,7 +194,7 @@ class CategorySharedViewModel(
                 it.copy(
                     title = "",
                     titleError = null,
-                    dialogOpen = false,
+                    sheetOpen = false,
                     selectedCategory = null
                 )
             }
@@ -137,7 +202,7 @@ class CategorySharedViewModel(
             _addCategoryState.update {
                 it.copy(
                     titleError = result.categoryTitleError,
-                    dialogOpen = true
+                    sheetOpen = true
                 )
             }
 
@@ -271,6 +336,18 @@ class CategorySharedViewModel(
             )
         }
         Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
+    }
+
+    fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                firestoreCategorySharedRepositoryImpl.deleteQuoteFromCategory(quote, categoryId)
+                Napier.d(tag = "deleteQuoteFromCategory", message = "$quote DELETED FROM $categoryId")
+            } catch (e: Exception) {
+                Napier.d(tag = "onError deleteQuoteFromCategory", message = e.message.toString())
+
+            }
+        }
     }
 
 }

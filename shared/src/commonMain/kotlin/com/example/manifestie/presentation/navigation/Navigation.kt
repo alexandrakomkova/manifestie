@@ -51,7 +51,6 @@ import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailScreen
 import com.example.manifestie.presentation.screens.category.category_list.CategoryScreen
-import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
 import com.example.manifestie.resources.nav_quotes
@@ -136,11 +135,11 @@ fun NavHostMain(
             val viewModel: CategorySharedViewModel = getKoin().get()
 
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                val dialogState by viewModel.addCategoryState.collectAsState()
+                val addCategorySheetState by viewModel.addCategoryState.collectAsState()
 
                 CategoryScreen(
                     viewModel = viewModel,
-                    dialogState = dialogState,
+                    addCategorySheetState = addCategorySheetState,
                     onEvent = viewModel::onEvent,
                     onCategoryClick = {
                         Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
@@ -155,15 +154,18 @@ fun NavHostMain(
                 route = AppScreen.CategoryDetail.route,
                 arguments = AppScreen.CategoryDetail.navArguments
             ) {
+                val addQuoteSheetState by viewModel.addQuoteState.collectAsState()
 
                 CategoryDetailScreen(
                     viewModel = viewModel,
-                    onUpClick =  { navController.navigateUp() }
+                    onUpClick =  { navController.navigateUp() },
+                    onEvent = viewModel::onEvent,
+                    addQuoteSheetState = addQuoteSheetState
                 )
             }
 
             composable(route = BottomBarScreen.RandomQuote.route) {
-                RandomQuoteScreen()
+                //RandomQuoteScreen()
             }
 
             composable(route = BottomBarScreen.Settings.route) {
@@ -171,7 +173,6 @@ fun NavHostMain(
             }
         }
     }
-
 }
 
 fun getTitle(currentScreen: NavDestination?): String {
