@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.presentation.screens.category.AddCategoryEvent
 import com.example.manifestie.presentation.screens.category.AddCategorySheetState
+import com.example.manifestie.presentation.screens.components.CustomTextField
 
 @Composable
 fun AddCategorySheet(

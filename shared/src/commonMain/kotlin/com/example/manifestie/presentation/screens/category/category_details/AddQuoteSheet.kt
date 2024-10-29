@@ -19,7 +19,7 @@ import com.example.manifestie.presentation.screens.category.CategorySharedState
 import com.example.manifestie.presentation.screens.components.CustomTextField
 
 @Composable
-fun AddQuoteSheetState(
+fun AddQuoteSheet(
     modifier: Modifier = Modifier,
     addQuoteState: AddQuoteSheetState,
     state: CategorySharedState,
