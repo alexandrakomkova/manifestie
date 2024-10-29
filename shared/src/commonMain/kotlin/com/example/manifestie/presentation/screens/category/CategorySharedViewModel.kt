@@ -4,7 +4,8 @@ import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.domain.model.Category
 import com.example.manifestie.domain.model.Quote
-import com.example.manifestie.presentation.screens.category.category_list.add_category.CategoryValidation
+import com.example.manifestie.domain.validation.CategoryValidation
+import com.example.manifestie.domain.validation.QuoteValidation
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +117,7 @@ class CategorySharedViewModel(
             }
 
             AddCategoryEvent.SaveCategory -> {
-                submitData()
+                submitCategory()
             }
 
             AddCategoryEvent.OnCategorySheetDismiss -> {
@@ -165,9 +166,53 @@ class CategorySharedViewModel(
         }
     }
 
-    private fun submitQuote() { }
+    private fun submitQuote() {
+        val result = QuoteValidation.validateQuoteContent(addQuoteState.value.quote)
 
-    private fun submitData() {
+        val hasError = listOfNotNull(
+            result.quoteContentError
+        )
+
+        if (hasError.isEmpty()) {
+            if(state.value.selectedQuote == null) {
+                state.value.selectedCategoryForQuotes?.let {
+                    addQuote(
+                        quote = Quote(quote = addQuoteState.value.quote),
+                        categoryId = it.id
+                    )
+                }
+            } else {
+                state.value.selectedQuote?.let {
+                    updateQuote(
+                        quote = Quote(
+                            id = it.id,
+                            quote = it.quote
+                        ),
+                        categoryId = state.value.selectedCategoryForQuotes!!.id
+                    )
+                }
+            }
+
+            _addQuoteState.update { it.copy(
+                quote = "",
+                quoteError = null,
+                sheetOpen = false
+            ) }
+
+            _state.update { it.copy(
+                selectedQuote = null
+            ) }
+
+        } else {
+            _addQuoteState.update { it.copy(
+                quoteError = result.quoteContentError,
+                sheetOpen = true
+            ) }
+        }
+
+    }
+
+    private fun submitCategory() {
         val result = CategoryValidation.validateCategoryTitle(addCategoryState.value.title)
         val hasError = listOfNotNull(
             result.categoryTitleError
@@ -329,7 +374,18 @@ class CategorySharedViewModel(
         }
     }
 
-    fun updateSelectedCategory(category: Category) {
+    private fun addQuote(quote: Quote, categoryId: String) {
+        viewModelScope.launch {
+            try {
+                firestoreCategorySharedRepositoryImpl.addQuoteToCategory(quote = quote, categoryId = categoryId)
+                Napier.d(tag = "addQuote", message = "$quote ADDED TO $categoryId")
+            } catch (e: Exception) {
+                Napier.d(tag = "onError addQuote", message = e.message.toString())
+            }
+        }
+    }
+
+    fun updateSelectedCategoryForQuotes(category: Category) {
         _state.update {
             it.copy(
                 selectedCategoryForQuotes = category
@@ -338,13 +394,24 @@ class CategorySharedViewModel(
         Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
     }
 
-    fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
+    private fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategorySharedRepositoryImpl.deleteQuoteFromCategory(quote, categoryId)
                 Napier.d(tag = "deleteQuoteFromCategory", message = "$quote DELETED FROM $categoryId")
             } catch (e: Exception) {
                 Napier.d(tag = "onError deleteQuoteFromCategory", message = e.message.toString())
+
+            }
+        }
+    }
+
+    private fun updateQuote(quote: Quote, categoryId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                firestoreCategorySharedRepositoryImpl.updateQuoteFromCategory(quote, categoryId)
+            } catch (e: Exception) {
+                Napier.d(tag = "onError updateQuote", message = e.message.toString())
 
             }
         }

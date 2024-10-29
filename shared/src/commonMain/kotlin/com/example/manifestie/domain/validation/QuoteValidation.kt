@@ -7,8 +7,8 @@ object QuoteValidation {
 
         if(quote.isBlank()) {
             result = result.copy(quoteContentError = "Quote can't be empty.")
-        } else if (quote.length < 10) {
-            result = result.copy(quoteContentError = "Quote must be at least 10 characters long.")
+        } else if (quote.isEmpty()) {
+            result = result.copy(quoteContentError = "Quote must be at least 1 characters long.")
         }
 
         return result
