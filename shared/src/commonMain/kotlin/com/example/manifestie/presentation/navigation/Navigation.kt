@@ -144,7 +144,7 @@ fun NavHostMain(
                     onCategoryClick = {
                         Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
 
-                        viewModel.updateSelectedCategory(it)
+                        viewModel.updateSelectedCategoryForQuotes(it)
                         onNavigate(AppScreen.CategoryDetail.route)
                     }
                 )
