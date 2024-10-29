@@ -8,7 +8,8 @@ val appModule = module {
     single {
         RandomQuoteViewModel(
             zenQuotesRepository = get(),
-            unsplashRepository = get()
+            unsplashRepository = get(),
+            firestoreCategorySharedRepositoryImpl = get()
         )
     }
 
