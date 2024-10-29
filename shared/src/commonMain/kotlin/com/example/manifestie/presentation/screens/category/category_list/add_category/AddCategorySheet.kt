@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.presentation.screens.category.AddCategoryEvent
-import com.example.manifestie.presentation.screens.category.AddCategoryState
+import com.example.manifestie.presentation.screens.category.AddCategorySheetState
 
 @Composable
 fun AddCategorySheet(
     modifier: Modifier = Modifier,
-    state: AddCategoryState,
+    state: AddCategorySheetState,
     onEvent: (AddCategoryEvent) -> Unit
 ) {
     Column(
