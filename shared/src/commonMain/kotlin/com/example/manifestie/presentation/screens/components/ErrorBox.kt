@@ -1,4 +1,4 @@
-package com.example.manifestie.core
+package com.example.manifestie.presentation.screens.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
