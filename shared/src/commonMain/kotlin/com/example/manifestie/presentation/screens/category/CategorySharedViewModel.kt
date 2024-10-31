@@ -4,13 +4,12 @@ import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.domain.model.Category
 import com.example.manifestie.domain.model.Quote
-import com.example.manifestie.domain.validation.CategoryValidation
-import com.example.manifestie.domain.validation.QuoteValidation
+import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailEventHandler
+import com.example.manifestie.presentation.screens.category.category_list.CategoryEventHandler
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
@@ -22,8 +21,8 @@ class CategorySharedViewModel(
     private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
 ): ViewModel(), KoinComponent {
 
-    private val _state = MutableStateFlow(CategorySharedState())
-    val state = _state.asStateFlow()
+    private val _categorySharedState = MutableStateFlow(CategorySharedState())
+    val state = _categorySharedState.asStateFlow()
 
     private val _addCategoryState = MutableStateFlow(AddCategorySheetState())
     val addCategoryState = _addCategoryState.asStateFlow()
@@ -31,231 +30,45 @@ class CategorySharedViewModel(
     private val _addQuoteState = MutableStateFlow(AddQuoteSheetState())
     val addQuoteState = _addQuoteState.asStateFlow()
 
+    private val categoryEventHandlers = CategoryEventHandler(this, firestoreCategorySharedRepositoryImpl)
+    private val categoryDetailEventHandlers = CategoryDetailEventHandler(this, firestoreCategorySharedRepositoryImpl)
+
+    fun updateSharedState(update: (CategorySharedState) -> CategorySharedState) {
+        _categorySharedState.update { update(it) }
+    }
+
+    fun updateAddCategoryState(update: (AddCategorySheetState) -> AddCategorySheetState) {
+        _addCategoryState.update { update(it) }
+    }
+
+    fun updateAddQuoteState(update: (AddQuoteSheetState) -> AddQuoteSheetState) {
+        _addQuoteState.update { update(it) }
+    }
+
     fun onEvent(event: CategoryDetailEvent) {
         when(event) {
-            is CategoryDetailEvent.DeleteQuoteFromCategory -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    state.value.selectedCategoryForQuotes?.let { category ->
-                        state.value.selectedQuote?.let { quote ->
-                            deleteQuoteFromCategory(
-                                quote = quote,
-                                categoryId = category.id
-                            )
-                        }
-                    }
-                    delay(300L)
-                    _state.update { it.copy(
-                        selectedCategoryForQuotes = null,
-                        selectedQuote = null
-                    ) }
-
-                    Napier.d(tag = "DeleteQuoteFromCategory", message = state.value.toString())
-                }
-            }
-
-            is CategoryDetailEvent.SelectCategory -> {
-                _state.update { it.copy(
-                    selectedCategoryForQuotes = event.category
-                ) }
-            }
-            is CategoryDetailEvent.SelectQuote -> {
-                _state.update { it.copy(
-                    selectedQuote = event.quote
-                ) }
-            }
-
-            AddQuoteEvent.OnAddQuoteClick -> {
-                _addQuoteState.update { it.copy(
-                    sheetOpen = true
-                ) }
-                Napier.d(tag = "OnAddQuoteClick", message = addQuoteState.value.toString())
-            }
-            is AddQuoteEvent.OnQuoteContentChanged -> {
-                _addQuoteState.update { it.copy(
-                    quote = event.quote
-                ) }
-                Napier.d(tag = "OnQuoteContentChanged", message = addQuoteState.value.toString())
-            }
-            AddQuoteEvent.OnQuoteSheetDismiss -> {
-                viewModelScope.launch {
-                    _addQuoteState.update {
-                        it.copy(
-                            sheetOpen = false,
-                            quoteError = null
-                        )
-                    }
-                    delay(300L) // Animation delay
-                }
-            }
-            AddQuoteEvent.SaveQuote -> {
-                submitQuote()
-            }
+            is CategoryDetailEvent.DeleteQuoteFromCategory -> categoryDetailEventHandlers.handleDeleteQuoteFromCategory()
+            is CategoryDetailEvent.SelectCategory -> categoryDetailEventHandlers.handleSelectCategory(event)
+            is CategoryDetailEvent.SelectQuote -> categoryDetailEventHandlers.handleSelectQuote(event)
+            AddQuoteEvent.OnAddQuoteClick -> categoryDetailEventHandlers.handleOnAddQuoteClick()
+            is AddQuoteEvent.OnQuoteContentChanged -> categoryDetailEventHandlers.handleOnQuoteContentChanged(event)
+            AddQuoteEvent.OnQuoteSheetDismiss -> categoryDetailEventHandlers.handleOnQuoteSheetDismiss()
+            AddQuoteEvent.SaveQuote -> categoryDetailEventHandlers.handleSaveQuote()
         }
     }
 
     fun onEvent(event: AddCategoryEvent) {
         when (event) {
-            AddCategoryEvent.OnAddCategoryClick -> {
-                _addCategoryState.update {
-                    it.copy(
-                        sheetOpen = true
-                    )
-                }
-                Napier.d(tag = "OnAddCategoryClick", message = addCategoryState.value.toString())
-            }
-
-            is AddCategoryEvent.OnCategoryTitleChanged -> {
-                _addCategoryState.update {
-                    it.copy(
-                        title = event.title
-                    )
-                }
-                Napier.d(
-                    tag = "OnCategoryTitleChanged",
-                    message = addCategoryState.value.toString()
-                )
-            }
-
-            AddCategoryEvent.SaveCategory -> {
-                submitCategory()
-            }
-
-            AddCategoryEvent.OnCategorySheetDismiss -> {
-                viewModelScope.launch {
-                    _addCategoryState.update {
-                        it.copy(
-                            sheetOpen = false,
-                            titleError = null
-                        )
-                    }
-                    delay(300L) // Animation delay
-                }
-            }
-
-            AddCategoryEvent.DeleteCategory -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    addCategoryState.value.selectedCategory?.let {
-                        deleteCategory(it)
-                    }
-
-                    delay(300L)
-                    _addCategoryState.update {
-                        it.copy(
-                            selectedCategory = null,
-                            sheetOpen = false,
-                            title = "",
-                            titleError = null
-                        )
-                    }
-
-                    Napier.d(tag = "DeleteCategory", message = addCategoryState.value.toString())
-                    Napier.d(tag = "DeleteCategory", message = state.value.toString())
-                }
-            }
-
-            is AddCategoryEvent.SelectCategory -> {
-                _addCategoryState.update {
-                    it.copy(
-                        selectedCategory = event.category,
-                        title = event.category.title,
-                        sheetOpen = true,
-                        titleError = null
-                    )
-                }
-            }
+            AddCategoryEvent.OnAddCategoryClick -> categoryEventHandlers.handleOnAddCategoryClick()
+            is AddCategoryEvent.OnCategoryTitleChanged -> categoryEventHandlers.handleOnCategoryTitleChanged(event)
+            AddCategoryEvent.SaveCategory -> categoryEventHandlers.handleSaveCategory()
+            AddCategoryEvent.OnCategorySheetDismiss -> categoryEventHandlers.handleOnCategorySheetDismiss()
+            AddCategoryEvent.DeleteCategory -> categoryEventHandlers.handleDeleteCategory()
+            is AddCategoryEvent.SelectCategory -> categoryEventHandlers.handleSelectCategory(event)
         }
     }
 
-    private fun submitQuote() {
-        val result = QuoteValidation.validateQuoteContent(addQuoteState.value.quote)
-
-        val hasError = listOfNotNull(
-            result.quoteContentError
-        )
-
-        if (hasError.isEmpty()) {
-            if(state.value.selectedQuote == null) {
-                state.value.selectedCategoryForQuotes?.let {
-                    addQuote(
-                        quote = Quote(quote = addQuoteState.value.quote),
-                        categoryId = it.id
-                    )
-                }
-            } else {
-                state.value.selectedQuote?.let {
-                    updateQuote(
-                        quote = Quote(
-                            id = it.id,
-                            quote = it.quote
-                        ),
-                        categoryId = state.value.selectedCategoryForQuotes!!.id
-                    )
-                }
-            }
-
-            _addQuoteState.update { it.copy(
-                quote = "",
-                quoteError = null,
-                sheetOpen = false
-            ) }
-
-            _state.update { it.copy(
-                selectedQuote = null
-            ) }
-
-        } else {
-            _addQuoteState.update { it.copy(
-                quoteError = result.quoteContentError,
-                sheetOpen = true
-            ) }
-        }
-
-    }
-
-    private fun submitCategory() {
-        val result = CategoryValidation.validateCategoryTitle(addCategoryState.value.title)
-        val hasError = listOfNotNull(
-            result.categoryTitleError
-        )
-
-        if (hasError.isEmpty()) {
-
-            if (addCategoryState.value.selectedCategory == null) {
-                addCategory(
-                    Category(title = addCategoryState.value.title)
-                )
-            } else {
-                addCategoryState.value.selectedCategory?.let { category ->
-                    updateCategory(
-                        Category(
-                            id = category.id,
-                            title = addCategoryState.value.title
-                        )
-                    )
-                }
-            }
-
-            _addCategoryState.update {
-                it.copy(
-                    title = "",
-                    titleError = null,
-                    sheetOpen = false,
-                    selectedCategory = null
-                )
-            }
-        } else {
-            _addCategoryState.update {
-                it.copy(
-                    titleError = result.categoryTitleError,
-                    sheetOpen = true
-                )
-            }
-
-            Napier.d(tag = "submitData", message = addCategoryState.value.toString())
-        }
-    }
-
-    private fun addCategory(category: Category) {
+    fun addCategory(category: Category) {
         viewModelScope.launch {
             try {
                 firestoreCategorySharedRepositoryImpl.addCategory(category = category)
@@ -270,7 +83,7 @@ class CategorySharedViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                _state.update {
+                _categorySharedState.update {
                     it.copy(
                         isLoading = true,
                         error = null,
@@ -280,7 +93,7 @@ class CategorySharedViewModel(
 
                 firestoreCategorySharedRepositoryImpl.getCategories().flowOn(Dispatchers.IO)
                     .collect { result ->
-                        _state.update { categoryListState ->
+                        _categorySharedState.update { categoryListState ->
                             categoryListState.copy(
                                 isLoading = false,
                                 error = null,
@@ -291,7 +104,7 @@ class CategorySharedViewModel(
 
             } catch (e: Exception) {
                 Napier.d(tag = "onError getCategoryFromFirestore", message = e.message.toString())
-                _state.update { categoryListState ->
+                _categorySharedState.update { categoryListState ->
                     categoryListState.copy(
                         error = NetworkError.NO_INTERNET.errorDescription,
                         isLoading = false
@@ -301,7 +114,7 @@ class CategorySharedViewModel(
         }
     }
 
-    private fun updateCategory(category: Category) {
+    fun updateCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategorySharedRepositoryImpl.updateCategory(category)
@@ -312,7 +125,7 @@ class CategorySharedViewModel(
         }
     }
 
-    private fun deleteCategory(category: Category) {
+    fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategorySharedRepositoryImpl.deleteCategory(category)
@@ -324,10 +137,19 @@ class CategorySharedViewModel(
         }
     }
 
+    fun updateSelectedCategoryForQuotes(category: Category) {
+        _categorySharedState.update {
+            it.copy(
+                selectedCategoryForQuotes = category
+            )
+        }
+        Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
+    }
+
     fun getQuotesByCategoryId() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _state.update {
+                _categorySharedState.update {
                     it.copy(
                         isLoading = true,
                         error = null,
@@ -337,7 +159,7 @@ class CategorySharedViewModel(
 
                 when(state.value.selectedCategoryForQuotes?.id) {
                     null, "" -> {
-                        _state.update {
+                        _categorySharedState.update {
                             it.copy(
                                 isLoading = false,
                                 error = null,
@@ -350,7 +172,7 @@ class CategorySharedViewModel(
                         firestoreCategorySharedRepositoryImpl.getQuotesByCategoryId(state.value.selectedCategoryForQuotes!!.id)
                             .flowOn(Dispatchers.IO)
                             .collect { result ->
-                                _state.update {
+                                _categorySharedState.update {
                                     it.copy(
                                         isLoading = false,
                                         error = null,
@@ -364,7 +186,7 @@ class CategorySharedViewModel(
                 Napier.d(tag = "getQuotesByCategoryId", message = state.value.toString())
             } catch (e: Exception) {
                 Napier.d(tag = "onError getQuotesByCategoryId", message = e.message.toString())
-                _state.update {
+                _categorySharedState.update {
                     it.copy(
                         error = NetworkError.NO_INTERNET.errorDescription,
                         isLoading = false
@@ -374,7 +196,7 @@ class CategorySharedViewModel(
         }
     }
 
-    private fun addQuote(quote: Quote, categoryId: String) {
+    fun addQuote(quote: Quote, categoryId: String) {
         viewModelScope.launch {
             try {
                 firestoreCategorySharedRepositoryImpl.addQuoteToCategory(quote = quote, categoryId = categoryId)
@@ -385,16 +207,7 @@ class CategorySharedViewModel(
         }
     }
 
-    fun updateSelectedCategoryForQuotes(category: Category) {
-        _state.update {
-            it.copy(
-                selectedCategoryForQuotes = category
-            )
-        }
-        Napier.d(tag = "updateSelectedCategory", message = state.value.toString())
-    }
-
-    private fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
+    fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategorySharedRepositoryImpl.deleteQuoteFromCategory(quote, categoryId)
@@ -406,7 +219,7 @@ class CategorySharedViewModel(
         }
     }
 
-    private fun updateQuote(quote: Quote, categoryId: String) {
+    fun updateQuote(quote: Quote, categoryId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestoreCategorySharedRepositoryImpl.updateQuoteFromCategory(quote, categoryId)
