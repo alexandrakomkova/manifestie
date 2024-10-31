@@ -1,12 +1,15 @@
 package com.example.manifestie.presentation.screens.category.category_list
 
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
+import com.example.manifestie.domain.model.Category
+import com.example.manifestie.domain.validation.CategoryValidation
 import com.example.manifestie.presentation.screens.category.AddCategoryEvent
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CategoryEventHandler(
@@ -30,10 +33,6 @@ class CategoryEventHandler(
             tag = "OnCategoryTitleChanged",
             message = viewModel.addCategoryState.value.toString()
         )
-    }
-
-    fun handleSaveCategory() {
-        viewModel.submitCategory()
     }
 
     fun handleOnCategorySheetDismiss() {
@@ -74,6 +73,74 @@ class CategoryEventHandler(
                 title = event.category.title,
                 sheetOpen = true,
                 titleError = null
+            )
+        }
+    }
+
+    fun handleSaveCategory() {
+        submitCategory()
+    }
+
+    private fun submitCategory() {
+        val result = CategoryValidation.validateCategoryTitle(viewModel.addCategoryState.value.title)
+
+        if (hasValidationErrors(result)) {
+            handleValidationErrors(result)
+        } else {
+            handleSuccessfulSubmission()
+        }
+    }
+
+    private fun hasValidationErrors(result: CategoryValidation.ValidationResult): Boolean {
+        return listOfNotNull(
+            result.categoryTitleError
+        ).isNotEmpty()
+    }
+
+    private fun handleValidationErrors(result: CategoryValidation.ValidationResult) {
+        viewModel.updateAddCategoryState  {
+            it.copy(
+                titleError = result.categoryTitleError,
+                sheetOpen = true
+            )
+        }
+
+        Napier.d(tag = "submitData", message = viewModel.addCategoryState.value.toString())
+    }
+
+    private fun handleSuccessfulSubmission() {
+        if (viewModel.addCategoryState.value.selectedCategory == null) {
+           handleAddCategory()
+        } else {
+            handleUpdateCategory()
+        }
+        resetState()
+    }
+
+    private fun handleAddCategory() {
+        viewModel.addCategory(
+            Category(title = viewModel.addCategoryState.value.title)
+        )
+    }
+
+    private fun handleUpdateCategory() {
+        viewModel.addCategoryState.value.selectedCategory?.let { category ->
+            viewModel.updateCategory(
+                Category(
+                    id = category.id,
+                    title = viewModel.addCategoryState.value.title
+                )
+            )
+        }
+    }
+
+    private fun resetState() {
+        viewModel.updateAddCategoryState {
+            it.copy(
+                title = "",
+                titleError = null,
+                sheetOpen = false,
+                selectedCategory = null
             )
         }
     }
