@@ -5,7 +5,8 @@ Kotlin Multiplatform Mobile app that helps stay motivated and inspired
 * Random affirmation
 * Async stunning photo loading from Unsplash
 * Home Screen widget with affirmation
-* Create your own categories and add affirmations!
+* Create, modify and delete your own categories
+* Create, modify and delete your own quotes and affirmations 
 
 ## Technologies and libraries
 * Kotlin Mutliplatform Mobile
