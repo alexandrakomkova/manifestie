@@ -9,13 +9,14 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CategoryEventHandler(
     private val viewModel: CategorySharedViewModel,
-    private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
+    firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
 ) {
+    private val categoryViewModelImpl = CategoryViewModelImpl(viewModel, firestoreCategorySharedRepositoryImpl)
+
     fun handleOnAddCategoryClick() {
         viewModel.updateAddCategoryState {
             it.copy(
@@ -50,7 +51,7 @@ class CategoryEventHandler(
     fun handleDeleteCategory() {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             viewModel.addCategoryState.value.selectedCategory?.let {
-                viewModel.deleteCategory(it)
+                categoryViewModelImpl.deleteCategory(it)
             }
             delay(300L)
             viewModel.updateAddCategoryState {
@@ -118,14 +119,14 @@ class CategoryEventHandler(
     }
 
     private fun handleAddCategory() {
-        viewModel.addCategory(
+        categoryViewModelImpl.addCategory(
             Category(title = viewModel.addCategoryState.value.title)
         )
     }
 
     private fun handleUpdateCategory() {
         viewModel.addCategoryState.value.selectedCategory?.let { category ->
-            viewModel.updateCategory(
+            categoryViewModelImpl.updateCategory(
                 Category(
                     id = category.id,
                     title = viewModel.addCategoryState.value.title
