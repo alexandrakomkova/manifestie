@@ -68,17 +68,6 @@ class CategorySharedViewModel(
         }
     }
 
-    fun addCategory(category: Category) {
-        viewModelScope.launch {
-            try {
-                firestoreCategorySharedRepositoryImpl.addCategory(category = category)
-                Napier.d(tag = "addCategory", message = category.toString())
-            } catch (e: Exception) {
-                Napier.d(tag = "onError addCategory", message = e.message.toString())
-            }
-        }
-    }
-
     fun getCategories() {
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -110,29 +99,6 @@ class CategorySharedViewModel(
                         isLoading = false
                     )
                 }
-            }
-        }
-    }
-
-    fun updateCategory(category: Category) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                firestoreCategorySharedRepositoryImpl.updateCategory(category)
-            } catch (e: Exception) {
-                Napier.d(tag = "onError updateCategory", message = e.message.toString())
-
-            }
-        }
-    }
-
-    fun deleteCategory(category: Category) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                firestoreCategorySharedRepositoryImpl.deleteCategory(category)
-                Napier.d(tag = "deleteCategory", message = category.toString())
-            } catch (e: Exception) {
-                Napier.d(tag = "onError deleteCategory", message = e.message.toString())
-
             }
         }
     }
@@ -192,40 +158,6 @@ class CategorySharedViewModel(
                         isLoading = false
                     )
                 }
-            }
-        }
-    }
-
-    fun addQuote(quote: Quote, categoryId: String) {
-        viewModelScope.launch {
-            try {
-                firestoreCategorySharedRepositoryImpl.addQuoteToCategory(quote = quote, categoryId = categoryId)
-                Napier.d(tag = "addQuote", message = "$quote ADDED TO $categoryId")
-            } catch (e: Exception) {
-                Napier.d(tag = "onError addQuote", message = e.message.toString())
-            }
-        }
-    }
-
-    fun deleteQuoteFromCategory(quote: Quote, categoryId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                firestoreCategorySharedRepositoryImpl.deleteQuoteFromCategory(quote, categoryId)
-                Napier.d(tag = "deleteQuoteFromCategory", message = "$quote DELETED FROM $categoryId")
-            } catch (e: Exception) {
-                Napier.d(tag = "onError deleteQuoteFromCategory", message = e.message.toString())
-
-            }
-        }
-    }
-
-    fun updateQuote(quote: Quote, categoryId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                firestoreCategorySharedRepositoryImpl.updateQuoteFromCategory(quote, categoryId)
-            } catch (e: Exception) {
-                Napier.d(tag = "onError updateQuote", message = e.message.toString())
-
             }
         }
     }
