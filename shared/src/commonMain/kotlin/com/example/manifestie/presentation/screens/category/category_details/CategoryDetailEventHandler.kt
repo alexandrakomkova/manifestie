@@ -14,8 +14,10 @@ import kotlinx.coroutines.launch
 
 class CategoryDetailEventHandler(
     private val viewModel: CategorySharedViewModel,
-    private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
+    firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
 ) {
+
+    private val quoteViewModelImpl = QuoteViewModelImpl(viewModel, firestoreCategorySharedRepositoryImpl)
     fun handleSelectCategory(event: CategoryDetailEvent.SelectCategory) {
         viewModel.updateSharedState { it.copy(
             selectedCategoryForQuotes = event.category
@@ -60,7 +62,7 @@ class CategoryDetailEventHandler(
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             viewModel.state.value.selectedCategoryForQuotes?.let { category ->
                 viewModel.state.value.selectedQuote?.let { quote ->
-                    viewModel.deleteQuoteFromCategory(
+                    quoteViewModelImpl.deleteQuoteFromCategory(
                         quote = quote,
                         categoryId = category.id
                     )
@@ -115,7 +117,7 @@ class CategoryDetailEventHandler(
 
     private fun handleAddQuote() {
         viewModel.state.value.selectedCategoryForQuotes?.let {
-            viewModel.addQuote(
+            quoteViewModelImpl.addQuoteToCategory(
                 quote = Quote(quote = viewModel.addQuoteState.value.quote),
                 categoryId = it.id
             )
@@ -124,7 +126,7 @@ class CategoryDetailEventHandler(
 
     private fun handleUpdateQuote() {
         viewModel.state.value.selectedQuote?.let {
-            viewModel.updateQuote(
+            quoteViewModelImpl.updateQuoteFromCategory(
                 quote = Quote(
                     id = it.id,
                     quote = it.quote
