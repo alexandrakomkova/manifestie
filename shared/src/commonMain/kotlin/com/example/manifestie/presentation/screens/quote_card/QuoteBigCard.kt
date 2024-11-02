@@ -2,12 +2,18 @@ package com.example.manifestie.presentation.screens.quote_card
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,18 +80,45 @@ fun QuoteBigCard(
             }
         }
 
-        Text(
-            text = state.quote,
-            //"When you know what you want, and want it bad enough, you will find a way to get it.",
-            fontSize = 24.sp,
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
+        Column(
+            modifier = modifier
+                .fillMaxSize()
                 .padding(50.dp)
-                .padding(bottom = 10.dp)
-                .align(Alignment.BottomCenter)
-        )
+                .padding(bottom = 10.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material3.Text(
+                text = state.quote, // "When you know what you want, and want it bad enough, you will find a way to get it.",
+                fontSize = 24.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp)
+            )
+
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val checked = remember { mutableStateOf(false) }
+
+                androidx.compose.material3.IconToggleButton(
+                    modifier = modifier.size(48.dp),
+                    checked = checked.value,
+                    onCheckedChange = {
+                        checked.value = it
+                    }
+                ) {
+                    androidx.compose.material3.Icon(
+                        if (checked.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = "favourite_btn",
+                        tint = if (checked.value) Color.Red else Color.White,
+                    )
+                }
+            }
+        }
     }
 }

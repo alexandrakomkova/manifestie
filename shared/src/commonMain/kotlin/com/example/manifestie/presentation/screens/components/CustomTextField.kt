@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list.add_category
+package com.example.manifestie.presentation.screens.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

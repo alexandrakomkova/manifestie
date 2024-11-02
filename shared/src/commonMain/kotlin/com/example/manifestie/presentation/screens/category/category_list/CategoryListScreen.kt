@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list
+package com.example.manifestie.presentation.screens.category.category_list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -42,22 +42,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.manifestie.core.ErrorBox
+import com.example.manifestie.presentation.screens.components.ErrorBox
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.presentation.screens.category_list.add_category.AddCategorySheet
+import com.example.manifestie.presentation.screens.category.AddCategoryEvent
+import com.example.manifestie.presentation.screens.category.AddCategorySheetState
+import com.example.manifestie.presentation.screens.category.CategorySharedState
+import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
+import com.example.manifestie.presentation.screens.category.category_list.add_category.AddCategorySheet
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
     onCategoryClick: (Category) -> Unit,
-    dialogState: AddCategoryState,
-    viewModel: CategoryListViewModel,
+    addCategorySheetState: AddCategorySheetState,
+    viewModel: CategorySharedViewModel,
     onEvent: (AddCategoryEvent) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -86,7 +91,7 @@ fun CategoryScreen(
     ) { paddingValue ->
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             when {
@@ -113,7 +118,7 @@ fun CategoryScreen(
                         exit = scaleOut() + fadeOut()
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             text = "Add your first category!",
                             color = Color.Black,
@@ -135,10 +140,10 @@ fun CategoryScreen(
             }
         }
 
-        if(dialogState.dialogOpen) {
+        if(addCategorySheetState.sheetOpen) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    onEvent(AddCategoryEvent.OnCategoryDialogDismiss)
+                    onEvent(AddCategoryEvent.OnCategorySheetDismiss)
                 },
                 sheetState = sheetState,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -146,18 +151,17 @@ fun CategoryScreen(
                 tonalElevation = 16.dp,
                 dragHandle = {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(8.dp)
                             .width(50.dp)
                             .height(6.dp)
                             .clip(RoundedCornerShape(50))
                             .background(MaterialTheme.colorScheme.primary)
-                            //.align(Alignment.Center)
                     )
                 }
             ) {
                 AddCategorySheet(
-                    state = dialogState,
+                    state = addCategorySheetState,
                     onEvent = { event -> onEvent(event) }
                 )
             }
@@ -169,13 +173,13 @@ fun CategoryScreen(
 fun CategoryListBlock(
     modifier: Modifier = Modifier,
     paddingValue: PaddingValues,
-    state: CategoryListState,
+    state: CategorySharedState,
     onEvent: (AddCategoryEvent) -> Unit,
     onCategoryClick: (Category) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(150.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(10.dp)
             .padding(paddingValue),
@@ -187,7 +191,10 @@ fun CategoryListBlock(
                 modifier = modifier,
                 category = category,
                 onEvent = { event -> onEvent(event) },
-                onCategoryClick =  { onCategoryClick(category) }
+                onCategoryClick =  {
+                    Napier.d(tag = "CategoryListBlock", message = "${category.id} - ${category.title}")
+                    onCategoryClick(category)
+                }
             )
         }
     }

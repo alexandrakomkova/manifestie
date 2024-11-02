@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list.add_category
+package com.example.manifestie.domain.validation
 
 object CategoryValidation {
 
@@ -7,6 +7,8 @@ object CategoryValidation {
 
         if(title.isBlank()) {
             result = result.copy(categoryTitleError = "Title can't be empty.")
+        } else if (title.length < 2) {
+            result = result.copy(categoryTitleError = "Title must be at least 2 characters long.")
         }
 
         return result

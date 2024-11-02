@@ -1,4 +1,4 @@
-package com.example.manifestie.presentation.screens.category_list.add_category
+package com.example.manifestie.presentation.screens.category.category_details
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,41 +13,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.manifestie.presentation.screens.category_list.AddCategoryEvent
-import com.example.manifestie.presentation.screens.category_list.AddCategoryState
+import com.example.manifestie.presentation.screens.category.AddQuoteEvent
+import com.example.manifestie.presentation.screens.category.AddQuoteSheetState
+import com.example.manifestie.presentation.screens.category.CategorySharedState
+import com.example.manifestie.presentation.screens.components.CustomTextField
 
 @Composable
-fun AddCategorySheet(
+fun AddQuoteSheet(
     modifier: Modifier = Modifier,
-    state: AddCategoryState,
-    onEvent: (AddCategoryEvent) -> Unit
+    addQuoteState: AddQuoteSheetState,
+    state: CategorySharedState,
+    onEvent: (AddQuoteEvent) -> Unit
 ) {
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .padding(bottom = 60.dp),
+            .padding(bottom = 60.dp)
     ) {
-
         CustomTextField(
-            labelText = "Title",
-            title = state.title,
-            setTitle = { onEvent(AddCategoryEvent.OnCategoryTitleChanged(it)) } ,
-            maxLines = 20,
-            hasError = state.titleError != null,
-            errorMessage = state.titleError
+            labelText = "Quote",
+            title = addQuoteState.quote,
+            setTitle = { onEvent(AddQuoteEvent.OnQuoteContentChanged(it)) } ,
+            maxLines = 5,
+            hasError = addQuoteState.quoteError != null,
+            errorMessage = addQuoteState.quoteError
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
         Button(
             onClick = {
-                onEvent(AddCategoryEvent.SaveCategory)
-//                if(state.selectedCategory != null) {
-//                    onEvent(AddCategoryEvent.EditCategory(state.selectedCategory))
-//                } else {
-//                    onEvent(AddCategoryEvent.SaveCategory)
-//                }
+                onEvent(AddQuoteEvent.SaveQuote)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,12 +53,10 @@ fun AddCategorySheet(
             shape = RoundedCornerShape(15.dp),
         ) {
             Text(
-                text = if(state.selectedCategory == null ) "Save" else "Update",
+                text = if(state.selectedQuote == null ) "Save" else "Update",
                 color = Color.White,
                 fontSize = 16.sp
             )
         }
-
     }
 }
-

@@ -43,17 +43,14 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
-import com.example.manifestie.presentation.screens.category_details.CategoryDetailScreen
-import com.example.manifestie.presentation.screens.category_list.CategoryListViewModel
-import com.example.manifestie.presentation.screens.category_list.CategoryScreen
-import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
+import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
+import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailScreen
+import com.example.manifestie.presentation.screens.category.category_list.CategoryScreen
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
 import com.example.manifestie.resources.nav_quotes
@@ -61,6 +58,7 @@ import com.example.manifestie.resources.nav_random_quote
 import com.example.manifestie.resources.nav_settings
 import com.example.manifestie.resources.setting_icon
 import com.example.manifestie.resources.sparkles_icon
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -134,41 +132,47 @@ fun NavHostMain(
                 )
             }
         ) {
+            val viewModel: CategorySharedViewModel = getKoin().get()
+
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                val viewModel: CategoryListViewModel = getKoin().get()
-                val dialogState by viewModel.addCategoryState.collectAsState()
+                val addCategorySheetState by viewModel.addCategoryState.collectAsState()
 
                 CategoryScreen(
                     viewModel = viewModel,
-                    dialogState = dialogState,
+                    addCategorySheetState = addCategorySheetState,
                     onEvent = viewModel::onEvent,
                     onCategoryClick = {
-                        onNavigate(AppScreen.CategoryDetail.createRoute(
-                            categoryName = it.title
-                        ))
+                        Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
+
+                        viewModel.updateSelectedCategoryForQuotes(it)
+                        onNavigate(AppScreen.CategoryDetail.route)
                     }
                 )
-            }
-            composable(route = BottomBarScreen.RandomQuote.route) {
-                RandomQuoteScreen()
-            }
-
-            composable(route = BottomBarScreen.Settings.route) {
-                HomeView()
             }
 
             composable(
                 route = AppScreen.CategoryDetail.route,
                 arguments = AppScreen.CategoryDetail.navArguments
-                ) {
+            ) {
+                val addQuoteSheetState by viewModel.addQuoteState.collectAsState()
+
                 CategoryDetailScreen(
-                    onUpClick =  { navController.navigateUp() }
+                    viewModel = viewModel,
+                    onUpClick =  { navController.navigateUp() },
+                    onEvent = viewModel::onEvent,
+                    addQuoteSheetState = addQuoteSheetState
                 )
             }
 
+            composable(route = BottomBarScreen.RandomQuote.route) {
+                //RandomQuoteScreen()
+            }
+
+            composable(route = BottomBarScreen.Settings.route) {
+                HomeView()
+            }
         }
     }
-
 }
 
 fun getTitle(currentScreen: NavDestination?): String {
@@ -207,14 +211,7 @@ sealed class AppScreen(
     val route: String,
     val navArguments: List<NamedNavArgument> = emptyList()
 ) {
-    data object CategoryDetail : AppScreen(
-        route = "nav_category_detail/{categoryName}",
-        navArguments = listOf(navArgument("categoryName") {
-            type = NavType.StringType
-        })
-    ) {
-        fun createRoute(categoryName: String) = "nav_category_detail/${categoryName}"
-    }
+    data object CategoryDetail: AppScreen("nav_category_detail")
 }
 
 sealed class BottomBarScreen(
