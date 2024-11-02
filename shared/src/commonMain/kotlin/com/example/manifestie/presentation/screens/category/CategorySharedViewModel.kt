@@ -3,7 +3,6 @@ package com.example.manifestie.presentation.screens.category
 import com.example.manifestie.core.NetworkError
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.domain.model.Category
-import com.example.manifestie.domain.model.Quote
 import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailEventHandler
 import com.example.manifestie.presentation.screens.category.category_list.CategoryEventHandler
 import dev.icerock.moko.mvvm.viewmodel.ViewModel

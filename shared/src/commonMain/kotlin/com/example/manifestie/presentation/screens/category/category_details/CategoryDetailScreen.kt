@@ -94,19 +94,7 @@ fun CategoryDetailScreen(
             }
             else -> {
                 AnimatedVisibility(
-                    visible = state.quotes.isEmpty(),
-                    enter =  scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "There is no quotes yet :<",
-                        color = Color.Black,
-                        fontSize = 22.sp)
-                }
-                AnimatedVisibility(
-                    visible = state.quotes.isNotEmpty(),
+                    visible = true,
                     enter =  scaleIn() + fadeIn(),
                     exit = scaleOut() + fadeOut()
                 ) {
@@ -134,12 +122,33 @@ fun CategoryDetailScreen(
     val sheetState = rememberModalBottomSheetState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            QuotesList(
-                modifier = Modifier.weight(1f),
-                state = state,
-                onEvent = { event -> onEvent(event)}
-            )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+
+            if (state.quotes.isEmpty()) {
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        text = "There is no quotes yet :<",
+                        color = Color.Black,
+                        fontSize = 22.sp)
+                }
+
+            } else {
+                QuotesList(
+                    modifier = Modifier.weight(1f),
+                    state = state,
+                    onEvent = { event -> onEvent(event)}
+                )
+            }
             Button(
                 onClick = {
                     onEvent(AddQuoteEvent.OnAddQuoteClick)
