@@ -28,6 +28,7 @@ class CategoryDetailEventHandler(
         viewModel.updateSharedState { it.copy(
             selectedQuote = event.quote
         ) }
+        Napier.d(tag = "handleSelectQuote", message = viewModel.state.value.toString())
     }
 
     fun handleOnAddQuoteClick() {
@@ -129,7 +130,7 @@ class CategoryDetailEventHandler(
             quoteViewModelImpl.updateQuoteFromCategory(
                 quote = Quote(
                     id = it.id,
-                    quote = it.quote
+                    quote = viewModel.addQuoteState.value.quote
                 ),
                 categoryId = viewModel.state.value.selectedCategoryForQuotes!!.id
             )

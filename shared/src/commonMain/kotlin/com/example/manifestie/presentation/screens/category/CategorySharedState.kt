@@ -42,7 +42,6 @@ data class AddQuoteSheetState (
     val quote: String = "",
     val quoteError: String? = null,
     val sheetOpen: Boolean = false,
-    // val selectedCategory: Category? = null
 )
 
 sealed interface AddQuoteEvent: CategoryDetailEvent {

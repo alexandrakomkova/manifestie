@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.presentation.screens.components.ErrorBox
 import com.example.manifestie.domain.model.Quote
+import com.example.manifestie.presentation.screens.category.AddCategoryEvent
 import com.example.manifestie.presentation.screens.category.AddQuoteEvent
 import com.example.manifestie.presentation.screens.category.AddQuoteSheetState
 import com.example.manifestie.presentation.screens.category.CategoryDetailEvent
@@ -156,9 +157,7 @@ fun CategoryDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .height(55.dp)
-                    //.padding(16.dp)
-                        ,
+                    .height(55.dp),
                 colors = ButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = Color.White,
@@ -289,7 +288,12 @@ fun QuoteCard(
                     ) {
                         DropdownMenuItem(
                             text = { Text("Edit") },
-                            onClick = {  }
+                            onClick = {
+                                Napier.d(tag = "dropdown edit", message = "edit")
+                                onEvent(CategoryDetailEvent.SelectQuote(quote))
+                                onEvent(AddQuoteEvent.OnQuoteContentChanged(quote.quote))
+                                onEvent(AddQuoteEvent.OnAddQuoteClick)
+                            }
                         )
                         DropdownMenuItem(
                             text = { Text("Delete") },
