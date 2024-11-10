@@ -75,7 +75,11 @@ fun RandomQuoteScreen(
             }
             state.imageUrl.isNotBlank() || state.quote.isNotBlank() -> {
                 Napier.d(tag = "RandomQuoteScreen", message = "show")
-                QuoteBigCard(modifier, state)
+                QuoteBigCard(
+                    modifier = modifier,
+                    state = state,
+                    onEvent = { event -> onEvent(event) }
+                )
             }
         }
     }
@@ -83,7 +87,7 @@ fun RandomQuoteScreen(
     if(chooseCategoryState.sheetOpen) {
         ModalBottomSheet(
             onDismissRequest = {
-                onEvent(RandomQuoteEvent.OnAddQuoteSheetDismiss)
+                onEvent(RandomQuoteEvent.OnChooseCategorySheetDismiss)
             },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -100,10 +104,10 @@ fun RandomQuoteScreen(
                 )
             }
         ) {
-//            AddCategorySheet(
-//                state = dialogState,
-//                onEvent = { event -> onEvent(event) }
-//            )
+            ChooseCategorySheet(
+                chooseCategoryState = chooseCategoryState,
+                onEvent = { event -> onEvent(event)}
+            )
         }
     }
 }
