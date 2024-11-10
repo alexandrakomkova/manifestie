@@ -8,6 +8,7 @@ import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryI
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
 import com.example.manifestie.domain.model.Quote
+import com.example.manifestie.presentation.screens.category.AddQuoteSheetState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,12 @@ class RandomQuoteViewModel(
 
     private val _chooseCategoryState = MutableStateFlow(ChooseCategoryState())
     val chooseCategoryState = _chooseCategoryState.asStateFlow()
+
+    private val randomQuoteEventHandler = RandomQuoteEventHandler(this)
+
+    fun updateChooseCategoryState(update: (ChooseCategoryState) -> ChooseCategoryState) {
+        _chooseCategoryState.update { update(it) }
+    }
 
     suspend fun getRandomPhoto() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -122,45 +129,10 @@ class RandomQuoteViewModel(
 
     fun onEvent(event: RandomQuoteEvent) {
         when(event) {
-            RandomQuoteEvent.OnAddQuoteClick -> {
-                viewModelScope.launch {
-                    _chooseCategoryState.update {
-                        it.copy(
-                            sheetOpen = true
-                        )
-                    }
-                    Napier.d(tag = "OnAddQuoteClick", message = chooseCategoryState.value.toString())
-                }
-            }
-            RandomQuoteEvent.SaveQuote -> {
-                submitData()
-            }
-
-            RandomQuoteEvent.OnAddQuoteSheetDismiss -> {
-                viewModelScope.launch {
-                    _chooseCategoryState.update { it.copy(
-                        sheetOpen = false,
-                        selectedCategory = emptyList() // add list that should be saved if user closes the sheet
-                    ) }
-                    delay(300L)
-                }
-            }
-        }
-    }
-
-    fun submitData() {
-
-        if(chooseCategoryState.value.selectedCategory.isEmpty()) {
-
-        } else {
-            chooseCategoryState.value.selectedCategory.forEach {
-                addQuoteToCategory(
-                    Quote(
-                        quote = state.value.quote
-                    ),
-                    it.id
-                )
-            }
+            RandomQuoteEvent.OnLikeQuoteClick -> randomQuoteEventHandler.handleOnLikeQuoteClick()
+            RandomQuoteEvent.OnChooseCategorySheetDismiss -> randomQuoteEventHandler.handleOnChooseCategorySheetDismiss()
+            is RandomQuoteEvent.SelectCategory -> randomQuoteEventHandler.handleSelectCategory(event)
+            RandomQuoteEvent.SaveQuoteToCategory -> randomQuoteEventHandler.handleSaveQuoteToCategory()
         }
     }
 
