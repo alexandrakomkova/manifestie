@@ -51,6 +51,8 @@ import com.example.manifestie.data.datastore.DataStoreHelper.getKoin
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import com.example.manifestie.presentation.screens.category.category_details.CategoryDetailScreen
 import com.example.manifestie.presentation.screens.category.category_list.CategoryScreen
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
 import com.example.manifestie.resources.nav_quotes
@@ -132,19 +134,19 @@ fun NavHostMain(
                 )
             }
         ) {
-            val viewModel: CategorySharedViewModel = getKoin().get()
+            val sharedViewModel: CategorySharedViewModel = getKoin().get()
 
             composable(route = BottomBarScreen.QuotesCategoryList.route) {
-                val addCategorySheetState by viewModel.addCategoryState.collectAsState()
+                val addCategorySheetState by sharedViewModel.addCategoryState.collectAsState()
 
                 CategoryScreen(
-                    viewModel = viewModel,
+                    viewModel = sharedViewModel,
                     addCategorySheetState = addCategorySheetState,
-                    onEvent = viewModel::onEvent,
+                    onEvent = sharedViewModel::onEvent,
                     onCategoryClick = {
                         Napier.d(tag = "onNavigate from CategoryScreen", message = it.id)
 
-                        viewModel.updateSelectedCategoryForQuotes(it)
+                        sharedViewModel.updateSelectedCategoryForQuotes(it)
                         onNavigate(AppScreen.CategoryDetail.route)
                     }
                 )
@@ -154,18 +156,25 @@ fun NavHostMain(
                 route = AppScreen.CategoryDetail.route,
                 arguments = AppScreen.CategoryDetail.navArguments
             ) {
-                val addQuoteSheetState by viewModel.addQuoteState.collectAsState()
+                val addQuoteSheetState by sharedViewModel.addQuoteState.collectAsState()
 
                 CategoryDetailScreen(
-                    viewModel = viewModel,
+                    viewModel = sharedViewModel,
                     onUpClick =  { navController.navigateUp() },
-                    onEvent = viewModel::onEvent,
+                    onEvent = sharedViewModel::onEvent,
                     addQuoteSheetState = addQuoteSheetState
                 )
             }
 
             composable(route = BottomBarScreen.RandomQuote.route) {
-                //RandomQuoteScreen()
+                val randomQuoteViewModel = getKoin().get<RandomQuoteViewModel>()
+                val chooseCategoryState by randomQuoteViewModel.chooseCategoryState.collectAsState()
+
+                RandomQuoteScreen(
+                    viewModel = randomQuoteViewModel,
+                    onEvent = randomQuoteViewModel::onEvent,
+                    chooseCategoryState = chooseCategoryState
+                )
             }
 
             composable(route = BottomBarScreen.Settings.route) {

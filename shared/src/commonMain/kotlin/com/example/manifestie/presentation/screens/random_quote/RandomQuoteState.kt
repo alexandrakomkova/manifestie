@@ -14,7 +14,7 @@ sealed interface RandomQuoteEvent {
     data object OnChooseCategorySheetDismiss: RandomQuoteEvent
     data class SelectCategory(val category: Category): RandomQuoteEvent
 
-    data object SaveQuote: RandomQuoteEvent
+    data object SaveQuoteToCategory: RandomQuoteEvent
 }
 
 data class ChooseCategoryState(
