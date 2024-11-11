@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manifestie.domain.model.Category
+import com.example.manifestie.presentation.screens.category.CategorySharedState
+import io.github.aakira.napier.Napier
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +33,8 @@ import com.example.manifestie.domain.model.Category
 fun ChooseCategorySheet(
     modifier: Modifier = Modifier,
     onEvent: (RandomQuoteEvent) -> Unit,
-    chooseCategoryState: ChooseCategoryState
+    chooseCategoryState: ChooseCategoryState,
+    sharedState: CategorySharedState
 ) {
 
         Column(
@@ -40,13 +43,16 @@ fun ChooseCategorySheet(
                 .padding(16.dp)
                 .padding(bottom = 60.dp)
         ) {
-            val options: List<Category> = listOf(
-                Category(title = "family"),
-                Category(title = "love"),
-                Category(title = "friendship"),
-                Category(title = "kindness"),
-                Category(title = "work and success"),
-            )
+//            val options: List<Category> = listOf(
+//                Category(title = "family"),
+//                Category(title = "love"),
+//                Category(title = "friendship"),
+//                Category(title = "kindness"),
+//                Category(title = "work and success"),
+//            )
+
+            val options: List<Category> = sharedState.categories
+            Napier.d(tag = "ChooseCategorySheet", message = options.toString())
 
             var expanded by remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
@@ -54,16 +60,21 @@ fun ChooseCategorySheet(
                 onExpandedChange =  { expanded = it }
             ) {
 
-                chooseCategoryState.selectedCategory?.let {
+                val result = when(chooseCategoryState.selectedCategory == null) {
+                    true -> options.first().title
+                    false -> chooseCategoryState.selectedCategory.title
+                }
+
+
                     TextField(
-                        value = it.title,
+                        value = result,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = modifier.menuAnchor().fillMaxWidth(),
                         label = { Text(text = "Select category") }
                     )
-                }
+
 
                 ExposedDropdownMenu(
                     expanded = expanded,

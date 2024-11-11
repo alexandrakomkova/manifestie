@@ -7,14 +7,11 @@ import com.example.manifestie.data.datastore.DataStoreHelper
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
-import com.example.manifestie.domain.model.Quote
-import com.example.manifestie.presentation.screens.category.AddQuoteSheetState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -133,17 +130,6 @@ class RandomQuoteViewModel(
             RandomQuoteEvent.OnChooseCategorySheetDismiss -> randomQuoteEventHandler.handleOnChooseCategorySheetDismiss()
             is RandomQuoteEvent.SelectCategory -> randomQuoteEventHandler.handleSelectCategory(event)
             RandomQuoteEvent.SaveQuoteToCategory -> randomQuoteEventHandler.handleSaveQuoteToCategory()
-        }
-    }
-
-    private fun addQuoteToCategory(quote: Quote, categoryId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                firestoreCategorySharedRepositoryImpl.addQuoteToCategory(quote, categoryId)
-                // Napier.d(tag = "addQuoteToCategory", message = quote.toString())
-            } catch (e: Exception) {
-                Napier.d(tag = "onError addQuoteToCategory", message = e.message.toString())
-            }
         }
     }
 }

@@ -169,9 +169,11 @@ fun NavHostMain(
             composable(route = BottomBarScreen.RandomQuote.route) {
                 val randomQuoteViewModel = getKoin().get<RandomQuoteViewModel>()
                 val chooseCategoryState by randomQuoteViewModel.chooseCategoryState.collectAsState()
+                val sharedState by sharedViewModel.state.collectAsState()
 
                 RandomQuoteScreen(
                     viewModel = randomQuoteViewModel,
+                    sharedState = sharedState,
                     onEvent = randomQuoteViewModel::onEvent,
                     chooseCategoryState = chooseCategoryState
                 )

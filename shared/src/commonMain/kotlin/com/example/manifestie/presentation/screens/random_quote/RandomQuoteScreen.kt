@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.manifestie.presentation.screens.category.CategorySharedState
 import com.example.manifestie.presentation.screens.components.ErrorBox
 import com.example.manifestie.presentation.screens.quote_card.QuoteBigCard
 import io.github.aakira.napier.Napier
@@ -36,6 +37,7 @@ import org.koin.compose.getKoin
 fun RandomQuoteScreen(
     modifier: Modifier = Modifier,
     viewModel: RandomQuoteViewModel = getKoin().get(),
+    sharedState: CategorySharedState,
     chooseCategoryState: ChooseCategoryState,
     onEvent: (RandomQuoteEvent) -> Unit
 ) {
@@ -45,7 +47,9 @@ fun RandomQuoteScreen(
     LaunchedEffect(Unit) {
         viewModel.getRandomQuote()
         viewModel.getRandomPhoto()
+
         Napier.d(tag = "RandomQuoteScreen - LaunchedEffect", message = state.toString())
+        // Napier.d(tag = "RandomQuoteScreen - LaunchedEffect", message = chooseCategoryState.toString())
     }
 
     Column(
@@ -106,7 +110,8 @@ fun RandomQuoteScreen(
         ) {
             ChooseCategorySheet(
                 chooseCategoryState = chooseCategoryState,
-                onEvent = { event -> onEvent(event)}
+                onEvent = { event -> onEvent(event)},
+                sharedState = sharedState
             )
         }
     }
