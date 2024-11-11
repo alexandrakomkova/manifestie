@@ -19,8 +19,7 @@ import kotlinx.coroutines.launch
 
 class RandomQuoteViewModel(
     private val zenQuotesRepository: ZenQuotesRepositoryImpl,
-    private val unsplashRepository: UnsplashRepositoryImpl,
-    private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
+    private val unsplashRepository: UnsplashRepositoryImpl
 ): ViewModel() {
 
     private val _state = MutableStateFlow(RandomQuoteState())
