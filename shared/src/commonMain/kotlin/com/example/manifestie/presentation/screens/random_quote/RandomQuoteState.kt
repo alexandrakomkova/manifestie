@@ -20,7 +20,6 @@ sealed interface RandomQuoteEvent {
 data class ChooseCategoryState(
     val sheetOpen: Boolean = false,
     val selectedCategory: Category? = null,
-    val categories: List<Category> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )

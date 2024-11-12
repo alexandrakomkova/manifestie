@@ -2,7 +2,6 @@ package com.example.manifestie.presentation.screens.random_quote
 
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RandomQuoteEventHandler(
