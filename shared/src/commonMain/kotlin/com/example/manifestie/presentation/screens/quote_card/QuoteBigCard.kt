@@ -14,6 +14,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,12 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
+import com.example.manifestie.presentation.screens.random_quote.RandomQuoteEvent
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteState
 
 @Composable
 fun QuoteBigCard(
     modifier: Modifier = Modifier,
-    state: RandomQuoteState
+    state: RandomQuoteState,
+    onEvent: (RandomQuoteEvent) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -88,7 +91,7 @@ fun QuoteBigCard(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            androidx.compose.material3.Text(
+            Text(
                 text = state.quote, // "When you know what you want, and want it bad enough, you will find a way to get it.",
                 fontSize = 24.sp,
                 color = Color.White,
@@ -105,14 +108,11 @@ fun QuoteBigCard(
             ) {
                 val checked = remember { mutableStateOf(false) }
 
-                androidx.compose.material3.IconToggleButton(
+                IconButton(
                     modifier = modifier.size(48.dp),
-                    checked = checked.value,
-                    onCheckedChange = {
-                        checked.value = it
-                    }
+                    onClick = { onEvent(RandomQuoteEvent.OnLikeQuoteClick) }
                 ) {
-                    androidx.compose.material3.Icon(
+                    Icon(
                         if (checked.value) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "favourite_btn",
                         tint = if (checked.value) Color.Red else Color.White,

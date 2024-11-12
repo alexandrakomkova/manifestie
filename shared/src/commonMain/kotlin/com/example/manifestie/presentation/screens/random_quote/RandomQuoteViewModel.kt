@@ -13,7 +13,6 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,6 +29,12 @@ class RandomQuoteViewModel(
 
     private val _chooseCategoryState = MutableStateFlow(ChooseCategoryState())
     val chooseCategoryState = _chooseCategoryState.asStateFlow()
+
+    private val randomQuoteEventHandler = RandomQuoteEventHandler(this)
+
+    fun updateChooseCategoryState(update: (ChooseCategoryState) -> ChooseCategoryState) {
+        _chooseCategoryState.update { update(it) }
+    }
 
     suspend fun getRandomPhoto() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -122,53 +127,24 @@ class RandomQuoteViewModel(
 
     fun onEvent(event: RandomQuoteEvent) {
         when(event) {
-            RandomQuoteEvent.OnAddQuoteClick -> {
-                viewModelScope.launch {
-                    _chooseCategoryState.update {
-                        it.copy(
-                            sheetOpen = true
-                        )
-                    }
-                    Napier.d(tag = "OnAddQuoteClick", message = chooseCategoryState.value.toString())
-                }
-            }
-            RandomQuoteEvent.SaveQuote -> {
-                submitData()
-            }
-
-            RandomQuoteEvent.OnAddQuoteSheetDismiss -> {
-                viewModelScope.launch {
-                    _chooseCategoryState.update { it.copy(
-                        sheetOpen = false,
-                        selectedCategory = emptyList() // add list that should be saved if user closes the sheet
-                    ) }
-                    delay(300L)
-                }
-            }
+            RandomQuoteEvent.OnLikeQuoteClick -> randomQuoteEventHandler.handleOnLikeQuoteClick()
+            RandomQuoteEvent.OnChooseCategorySheetDismiss -> randomQuoteEventHandler.handleOnChooseCategorySheetDismiss()
+            is RandomQuoteEvent.SelectCategory -> randomQuoteEventHandler.handleSelectCategory(event)
+            RandomQuoteEvent.SaveQuoteToCategory -> randomQuoteEventHandler.handleSaveQuoteToCategory()
         }
     }
 
-    fun submitData() {
-
-        if(chooseCategoryState.value.selectedCategory.isEmpty()) {
-
-        } else {
-            chooseCategoryState.value.selectedCategory.forEach {
-                addQuoteToCategory(
-                    Quote(
-                        quote = state.value.quote
-                    ),
-                    it.id
-                )
-            }
-        }
-    }
-
-    private fun addQuoteToCategory(quote: Quote, categoryId: String) {
+    fun addQuoteToCategory() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                firestoreCategorySharedRepositoryImpl.addQuoteToCategory(quote, categoryId)
-                // Napier.d(tag = "addQuoteToCategory", message = quote.toString())
+                if(chooseCategoryState.value.selectedCategory != null) {
+                    firestoreCategorySharedRepositoryImpl.addQuoteToCategory(
+                        quote = Quote(quote = state.value.quote),
+                        categoryId = chooseCategoryState.value.selectedCategory!!.id
+                    )
+                }
+
+                Napier.d(tag = "addQuoteToCategory", message = "${state.value.quote} ADDED TO ${chooseCategoryState.value.selectedCategory!!.id}")
             } catch (e: Exception) {
                 Napier.d(tag = "onError addQuoteToCategory", message = e.message.toString())
             }

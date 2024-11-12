@@ -10,14 +10,16 @@ data class RandomQuoteState (
 )
 
 sealed interface RandomQuoteEvent {
-    data object OnAddQuoteClick: RandomQuoteEvent
-    data object OnAddQuoteSheetDismiss: RandomQuoteEvent
+    data object OnLikeQuoteClick: RandomQuoteEvent
+    data object OnChooseCategorySheetDismiss: RandomQuoteEvent
+    data class SelectCategory(val category: Category): RandomQuoteEvent
 
-
-    data object SaveQuote: RandomQuoteEvent
+    data object SaveQuoteToCategory: RandomQuoteEvent
 }
 
 data class ChooseCategoryState(
     val sheetOpen: Boolean = false,
-    val selectedCategory: List<Category> = emptyList()
+    val selectedCategory: Category? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
