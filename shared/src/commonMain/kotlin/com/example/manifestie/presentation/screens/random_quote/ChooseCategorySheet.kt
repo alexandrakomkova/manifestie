@@ -60,21 +60,25 @@ fun ChooseCategorySheet(
                 onExpandedChange =  { expanded = it }
             ) {
 
-                val result = when(chooseCategoryState.selectedCategory == null) {
-                    true -> options.first().title
-                    false -> chooseCategoryState.selectedCategory.title
+//                val result = when(chooseCategoryState.selectedCategory == null) {
+//                    true -> options.first().title
+//                    false -> chooseCategoryState.selectedCategory.title
+//                }
+
+                if(chooseCategoryState.selectedCategory == null) {
+                    onEvent(RandomQuoteEvent.SelectCategory(options.first()))
                 }
 
-
+                chooseCategoryState.selectedCategory?.let {
                     TextField(
-                        value = result,
+                        value = it.title,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = modifier.menuAnchor().fillMaxWidth(),
                         label = { Text(text = "Select category") }
                     )
-
+                }
 
                 ExposedDropdownMenu(
                     expanded = expanded,
@@ -97,7 +101,7 @@ fun ChooseCategorySheet(
 
             Button(
                 onClick = {
-                    // onEvent(RandomQuoteEvent.SaveQuoteToCategory)
+                    onEvent(RandomQuoteEvent.SaveQuoteToCategory)
                 },
                 modifier = modifier
                     .fillMaxWidth()

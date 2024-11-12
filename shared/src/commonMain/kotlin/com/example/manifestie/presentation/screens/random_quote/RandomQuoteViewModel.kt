@@ -7,6 +7,7 @@ import com.example.manifestie.data.datastore.DataStoreHelper
 import com.example.manifestie.data.repository.FirestoreCategorySharedRepositoryImpl
 import com.example.manifestie.data.repository.UnsplashRepositoryImpl
 import com.example.manifestie.data.repository.ZenQuotesRepositoryImpl
+import com.example.manifestie.domain.model.Quote
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 
 class RandomQuoteViewModel(
     private val zenQuotesRepository: ZenQuotesRepositoryImpl,
-    private val unsplashRepository: UnsplashRepositoryImpl
+    private val unsplashRepository: UnsplashRepositoryImpl,
+    private val firestoreCategorySharedRepositoryImpl: FirestoreCategorySharedRepositoryImpl
 ): ViewModel() {
 
     private val _state = MutableStateFlow(RandomQuoteState())
@@ -129,6 +131,23 @@ class RandomQuoteViewModel(
             RandomQuoteEvent.OnChooseCategorySheetDismiss -> randomQuoteEventHandler.handleOnChooseCategorySheetDismiss()
             is RandomQuoteEvent.SelectCategory -> randomQuoteEventHandler.handleSelectCategory(event)
             RandomQuoteEvent.SaveQuoteToCategory -> randomQuoteEventHandler.handleSaveQuoteToCategory()
+        }
+    }
+
+    fun addQuoteToCategory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if(chooseCategoryState.value.selectedCategory != null) {
+                    firestoreCategorySharedRepositoryImpl.addQuoteToCategory(
+                        quote = Quote(quote = state.value.quote),
+                        categoryId = chooseCategoryState.value.selectedCategory!!.id
+                    )
+                }
+
+                Napier.d(tag = "addQuoteToCategory", message = "${state.value.quote} ADDED TO ${chooseCategoryState.value.selectedCategory!!.id}")
+            } catch (e: Exception) {
+                Napier.d(tag = "onError addQuoteToCategory", message = e.message.toString())
+            }
         }
     }
 }

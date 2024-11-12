@@ -37,20 +37,16 @@ class RandomQuoteEventHandler(
         submitData()
     }
 
-    fun submitData() {
-        Napier.d(tag = "OnLikeQuoteClick", message = viewModel.chooseCategoryState.value.toString())
+    private fun submitData() {
+        Napier.d(tag = "OnLikeQuoteClick", message = "submitData")
 
-//        if(chooseCategoryState.value.selectedCategory.isEmpty()) {
-//
-//        } else {
-//            chooseCategoryState.value.selectedCategory.forEach {
-//                addQuoteToCategory(
-//                    Quote(
-//                        quote = state.value.quote
-//                    ),
-//                    it.id
-//                )
-//            }
-//        }
+        viewModel.addQuoteToCategory()
+        viewModel.viewModelScope.launch {
+            viewModel.updateChooseCategoryState { it.copy(
+                selectedCategory = null,
+                sheetOpen = false
+            ) }
+            delay(300L)
+        }
     }
 }
