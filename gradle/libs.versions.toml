@@ -37,6 +37,8 @@ navigationCompose = "2.8.0-alpha02"
 sqldelight = "2.0.1"
 firebaseFirestoreKtx = "25.1.0"
 
+colorpicker = "1.1.2"
+
 [libraries]
 firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "firebaseFirestore" }
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebaseFirestore" }
@@ -103,6 +105,8 @@ moko-resource = {group = "dev.icerock.moko", name = "resources", version.ref = "
 moko-resource-compose = {group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko-version"}
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+compose-colorpicker = { module = "com.github.skydoves:colorpicker-compose", version.ref = "colorpicker" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

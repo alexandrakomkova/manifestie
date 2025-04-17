@@ -5,17 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.manifestie.App
 import com.example.manifestie.android.glance_app_widget.WidgetUpdater
 import com.example.manifestie.data.datastore.DataStoreHelper
 import com.example.manifestie.di.initKoin
+import com.example.manifestie.presentation.screens.settings.SettingsScreen
 import com.google.firebase.Firebase
 import com.google.firebase.initialize
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.dsl.module
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,4 +47,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
+ @Preview
+ @Composable
+ fun SettingsScreenPreview() {
+     SettingsScreen()
+ }

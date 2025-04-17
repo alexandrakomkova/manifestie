@@ -59,6 +59,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.3")
 }
 
 apply(plugin = "com.google.gms.google-services")

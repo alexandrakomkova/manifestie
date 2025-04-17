@@ -95,6 +95,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             //implementation("com.google.android.gms:play-services:17.0.0")
+
+            implementation(libs.compose.colorpicker)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -118,6 +120,7 @@ android {
 dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.firebase.firestore.ktx)
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.3")
 }
 
 fun getUnsplashAccess(): String? {

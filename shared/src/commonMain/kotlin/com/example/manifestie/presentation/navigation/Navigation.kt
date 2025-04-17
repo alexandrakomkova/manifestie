@@ -53,6 +53,7 @@ import com.example.manifestie.presentation.screens.category.category_details.Cat
 import com.example.manifestie.presentation.screens.category.category_list.CategoryScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
+import com.example.manifestie.presentation.screens.settings.SettingsScreen
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
 import com.example.manifestie.resources.nav_quotes
@@ -180,7 +181,7 @@ fun NavHostMain(
             }
 
             composable(route = BottomBarScreen.Settings.route) {
-                HomeView()
+                SettingsScreen()
             }
         }
     }
