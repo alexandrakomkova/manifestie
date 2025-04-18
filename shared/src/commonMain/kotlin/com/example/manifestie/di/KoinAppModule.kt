@@ -2,6 +2,7 @@ package com.example.manifestie.di
 
 import com.example.manifestie.presentation.screens.category.CategorySharedViewModel
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
+import com.example.manifestie.presentation.screens.settings.SettingsViewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -17,5 +18,9 @@ val appModule = module {
         CategorySharedViewModel(
             firestoreCategorySharedRepositoryImpl = get()
         )
+    }
+
+    single {
+        SettingsViewModel()
     }
 }
