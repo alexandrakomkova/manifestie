@@ -8,6 +8,8 @@ const val ZEN_QUOTES_RANDOM_URL = "https://zenquotes.io/api/random"
 const val UNSPLASH_RANDOM_URL = "https://api.unsplash.com/photos/random"
 
 val QUOTE_WIDGET = stringPreferencesKey("quote_widget")
+val QUOTE_WIDGET_COLOR = stringPreferencesKey("quote_widget_color")
+val QUOTE_WIDGET_TIME = stringPreferencesKey("quote_widget_time")
 
 const val FIRESTORE_CATEGORY_LIST = "CATEGORIES"
 const val FIRESTORE_QUOTE_LIST = "quotes"

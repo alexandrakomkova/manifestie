@@ -3,9 +3,10 @@ package com.example.manifestie.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesOf
 import com.example.manifestie.core.CommonFlow
 import com.example.manifestie.core.QUOTE_WIDGET
+import com.example.manifestie.core.QUOTE_WIDGET_COLOR
+import com.example.manifestie.core.QUOTE_WIDGET_TIME
 import com.example.manifestie.core.asCommonFlow
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +35,24 @@ object DataStoreHelper: KoinComponent {
         }
 
         Napier.d(tag = "DataStoreHelper update", message = newQuote.toString())
+    }
+
+    fun updateWidgetColor(widgetColor: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStore.edit { preferences ->
+                preferences[QUOTE_WIDGET_COLOR] = widgetColor
+            }
+            Napier.d(tag = "updateWidgetColor", message = dataStore.data.first()[QUOTE_WIDGET_COLOR].toString())
+        }
+    }
+
+    fun updateWidgetTime(widgetTime: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStore.edit { preferences ->
+                preferences[QUOTE_WIDGET_TIME] = widgetTime
+            }
+            Napier.d(tag = "updateWidgetTime", message = dataStore.data.first()[QUOTE_WIDGET_TIME].toString())
+        }
     }
 
 //    fun quoteUpdate(text: String) {
