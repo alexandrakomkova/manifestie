@@ -54,6 +54,7 @@ import com.example.manifestie.presentation.screens.category.category_list.Catego
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteScreen
 import com.example.manifestie.presentation.screens.random_quote.RandomQuoteViewModel
 import com.example.manifestie.presentation.screens.settings.SettingsScreen
+import com.example.manifestie.presentation.screens.settings.SettingsViewModel
 import com.example.manifestie.resources.Res
 import com.example.manifestie.resources.list_stars_icon
 import com.example.manifestie.resources.nav_quotes
@@ -181,7 +182,12 @@ fun NavHostMain(
             }
 
             composable(route = BottomBarScreen.Settings.route) {
-                SettingsScreen()
+                val settingsViewModel = getKoin().get<SettingsViewModel>()
+
+                SettingsScreen(
+                    viewModel = settingsViewModel,
+                    onEvent = settingsViewModel::onEvent
+                )
             }
         }
     }

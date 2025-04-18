@@ -25,9 +25,15 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    modifier: Modifier = Modifier,
+    onEvent: (SettingsEvent) -> Unit
+) {
     var selectedColor by remember { mutableStateOf(Color.Red) }
     var selectedTime by remember { mutableStateOf("10:00") }
+
+    val state by viewModel.state.collectAsState()
     val controller = rememberColorPickerController()
 
     MaterialTheme {
@@ -99,8 +105,13 @@ fun SettingsScreen() {
                 onClick = {
                     val finalColor = controller.selectedColor.value
 
-                    println("Сохранение настроек: Цвет=${finalColor}, Время=$selectedTime")
+                    println("Сохранение настроек: Цвет=${finalColor}, Время=${state.selectedTime}")
                     println("Сохраненный Hex: ${finalColor.toHexCode()}")
+
+                    onEvent(SettingsEvent.SaveSettings(
+                        selectedTime = selectedTime,
+                        selectedColor = finalColor.toHexCode()
+                    ))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
